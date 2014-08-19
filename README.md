@@ -1,4 +1,4 @@
-comp90014_workshops
+COMP90014_workshops
 ===================
 
-Programming tutorials used in COMP90014 labs.
+Programming tutorials used in COMP90014 labs. The contents of this repository are in the gh-pages branch.
