@@ -1759,7 +1759,7 @@ HANT
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the introductory programming workshop you were introduced to string indexing, using square brackets <code>[]</code>.</p>
+<p>In the <a href="http://claresloggett.github.io/hammingdist_workshop/">introductory programming workshop</a> you were introduced to string indexing, using square brackets <code>[]</code>.</p>
 </div>
 </div>
 </div>
@@ -1848,6 +1848,45 @@ C
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Python also allows us to get multiple letters from a string at once using <em>slicing</em>. For instance, <code>s[2:4]</code> will give a <em>slice</em> of the string, starting at index <code>2</code> and going up to, but not including, index <code>4</code>. </p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[4]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="k">print</span> <span class="n">dna_string</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+TT
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>We can also leave one (or both) of the numbers out, to go all the way from the start, or all the way until the end of the string.</p>
 <p>String slicing will be useful for finding the k-mers in a read, and for finding the overlapping suffixes and prefixes of length (k-1).</p>
 <p>Here are some slicing examples: play with this yourself until you get a feel for it.</p>
@@ -1857,7 +1896,7 @@ C
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[4]:
+In&nbsp;[5]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1888,7 +1927,7 @@ AT
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[5]:
+In&nbsp;[6]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1919,7 +1958,7 @@ ATT
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[6]:
+In&nbsp;[7]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1951,7 +1990,7 @@ GATT
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[7]:
+In&nbsp;[8]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1983,7 +2022,7 @@ GATT
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[8]:
+In&nbsp;[9]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2015,7 +2054,7 @@ ACA
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[9]:
+In&nbsp;[10]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2047,7 +2086,7 @@ CA
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[10]:
+In&nbsp;[11]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2092,50 +2131,6 @@ dna_string[4:] == &quot;ACA&quot;
 dna_string[:4] + dna_string[4:] == &quot;GATT&quot; + &quot;ACA&quot; == dna_string
 </code></pre><p>Similarly, <code>dna_string[:2]</code> and <code>dna_string[2:]</code>, for instance, split the string neatly into <code>&quot;GA&quot;</code> and <code>&quot;TTACA&quot;</code>.</p>
 <p>This can be a useful way to remember and understand why a slice starts on the first index, but only goes up to just <em>before</em> the second index, and does not include it.</p>
-<p>It&#39;s also useful to notice that since the length of <code>dna_string</code> is <code>7</code>, the slice <code>dna_string[0:7]</code>, which gives all letters from index 0 to index 6, actually returns the entire string.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[11]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre><span class="n">dna_string</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">
-    Out[11]:</div>
-
-
-<div class="output_text output_subarea output_pyout">
-<pre>
-&apos;GATTACA&apos;
-</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Just like indexing, slicing can be used on lists just as well as strings.</p>
 </div>
 </div>
 </div>
@@ -2151,13 +2146,10 @@ In&nbsp;[11]:
 GATT
 ATTA
 TTAC
-TATA
+TACA
 
 print_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">5</span>)
 MISSI
-ISSIS
-SSISS
-SISSI
 ISSIS
 SSISS
 SISSI
@@ -2167,10 +2159,24 @@ SIPPI
 </code></pre>
 <p><em>Hints: You will need to use string slicing for this! You will probably want to use a <code>for</code> loop, and the <code>len()</code> function. </em></p>
 </li>
-<li><p>Modify your function so that intead of printing out each kmer, it prints out, for each k-mer, the length (k-1) prefix (all but the last letter) and the length (k-1) suffix (all but the first letter).</p>
+<li><p>Modify your function so that intead of printing out each kmer, it prints out, for each k-mer, the length (k-1) prefix (all but the last letter) and the length (k-1) suffix (all but the first letter). Some sample output should look like:</p>
+<pre><code class="language-python">print_prefixes_and_suffixes(<span class="string">"GATTACA"</span>,<span class="number">4</span>)
+GAT ATT
+ATT TTA
+TTA TAC
+TAC ACA
+
+print_prefixes_and_suffixes(<span class="string">"MISSISSIPPI"</span>,<span class="number">5</span>)
+MISS ISSI
+ISSI SSIS
+SSIS SISS
+SISS ISSI
+ISSI SSIP
+SSIP SIPP
+SIPP IPPI
+</code></pre>
 </li>
 </ol>
-<p>(TBD)</p>
 </div>
 </div>
 </div>
@@ -2179,7 +2185,7 @@ SIPPI
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Collections-of-k-mers:-Lists-and-Sets">Collections of k-mers: Lists and Sets<a class="anchor-link" href="#Collections-of-k-mers:-Lists-and-Sets">&#182;</a></h2>
+<h2 id="Collections-of-things:-Lists-and-Sets">Collections of things: Lists and Sets<a class="anchor-link" href="#Collections-of-things:-Lists-and-Sets">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -2217,7 +2223,7 @@ SIPPI
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[12]:
+In&nbsp;[13]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2258,7 +2264,7 @@ In&nbsp;[12]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[13]:
+In&nbsp;[14]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2299,7 +2305,7 @@ In&nbsp;[13]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[14]:
+In&nbsp;[15]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2331,7 +2337,7 @@ In&nbsp;[14]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[15]:
+In&nbsp;[16]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2371,7 +2377,7 @@ In&nbsp;[15]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[16]:
+In&nbsp;[17]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2387,7 +2393,7 @@ In&nbsp;[16]:
 
 
 <div class="output_area"><div class="prompt output_prompt">
-    Out[16]:</div>
+    Out[17]:</div>
 
 
 <div class="output_text output_subarea output_pyout">
@@ -2414,7 +2420,7 @@ In&nbsp;[16]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[17]:
+In&nbsp;[18]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2460,7 +2466,7 @@ After append: [1, 3, 5, 7, 9]
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[18]:
+In&nbsp;[19]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2506,7 +2512,15 @@ In&nbsp;[18]:
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="challenge">Challenge</h4>
 <p>Write a function which takes a string and a kmer length k as input. This time, instead of printing out the kmers directly inside the function, build and return a <em>list</em> of all the kmers in the string. As before, it&#39;s ok to include a kmer more than once. Some example output should look like:</p>
-<p>(TBD)</p>
+<pre><code class="language-python"><span class="keyword">print</span> find_kmers(<span class="string">"GATTACA"</span>,<span class="number">4</span>)
+[<span class="string">'GATT'</span>, <span class="string">'ATTA'</span>, <span class="string">'TTAC'</span>, <span class="string">'TACA'</span>]
+
+<span class="keyword">print</span> find_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">5</span>)
+[<span class="string">'MISSI'</span>, <span class="string">'ISSIS'</span>, <span class="string">'SSISS'</span>, <span class="string">'SISSI'</span>, <span class="string">'ISSIP'</span>, <span class="string">'SSIPP'</span>, <span class="string">'SIPPI'</span>]
+
+<span class="keyword">print</span> find_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">3</span>)
+[<span class="string">'MIS'</span>, <span class="string">'ISS'</span>, <span class="string">'SSI'</span>, <span class="string">'SIS'</span>, <span class="string">'ISS'</span>, <span class="string">'SSI'</span>, <span class="string">'SIP'</span>, <span class="string">'IPP'</span>, <span class="string">'PPI'</span>]
+</code></pre>
 </div>
 </div>
 </div>
@@ -2546,7 +2560,7 @@ In&nbsp;[18]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[19]:
+In&nbsp;[20]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2587,7 +2601,7 @@ set([1, 3, 5, 7])
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[20]:
+In&nbsp;[21]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2628,7 +2642,7 @@ set([1, 3, 5, 7])
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[21]:
+In&nbsp;[22]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2677,7 +2691,7 @@ set([&apos;1&apos;, &apos;3&apos;, &apos;5&apos;, &apos;7&apos;, &apos;6&apos;])
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[22]:
+In&nbsp;[23]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2722,7 +2736,7 @@ After add: set([11, 1, 3, 5, 7])
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[23]:
+In&nbsp;[24]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2760,8 +2774,30 @@ After add: set([1, 3, 5, 7])
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="challenge">Challenge</h4>
-<p>Write a function which takes a string (i.e. a read) and a kmer length k, and returns a set of all the <em>unique</em> kmers in that string. Some example output should look like this (though the values in the sets may be in a different order):</p>
-<p>(TBD)</p>
+<p>Write a function which takes a string and a kmer length k, and returns a set of all the <em>unique</em> kmers in that string. Some example output should look like this:</p>
+<pre><code class="language-python"><span class="keyword">print</span> find_unique_kmers(<span class="string">"GATTACA"</span>,<span class="number">4</span>)
+set([<span class="string">'GATT'</span>, <span class="string">'TACA'</span>, <span class="string">'TTAC'</span>, <span class="string">'ATTA'</span>])
+
+<span class="keyword">print</span> find_unique_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">5</span>)
+set([<span class="string">'SISSI'</span>, <span class="string">'MISSI'</span>, <span class="string">'SSIPP'</span>, <span class="string">'ISSIP'</span>, <span class="string">'ISSIS'</span>, <span class="string">'SSISS'</span>, <span class="string">'SIPPI'</span>])
+
+<span class="keyword">print</span> find_unique_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">3</span>)
+set([<span class="string">'SIS'</span>, <span class="string">'SIP'</span>, <span class="string">'ISS'</span>, <span class="string">'PPI'</span>, <span class="string">'IPP'</span>, <span class="string">'SSI'</span>, <span class="string">'MIS'</span>])
+</code></pre>
+<p>Since sets don&#39;t preserve the order of the items inside them, your sets may display the kmers in a different order - this is still correct.</p>
+<p>If you compare your output to the output from the previous challenge, you should see that if the input string has repeats, there are less <em>unique</em> kmers than total observed kmers:</p>
+<pre><code class="language-python"><span class="keyword">print</span> find_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">3</span>)
+[<span class="string">'MIS'</span>, <span class="string">'ISS'</span>, <span class="string">'SSI'</span>, <span class="string">'SIS'</span>, <span class="string">'ISS'</span>, <span class="string">'SSI'</span>, <span class="string">'SIP'</span>, <span class="string">'IPP'</span>, <span class="string">'PPI'</span>]
+
+<span class="keyword">print</span> len(find_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">3</span>))
+<span class="number">9</span>
+
+<span class="keyword">print</span> find_unique_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">3</span>)
+set([<span class="string">'SIS'</span>, <span class="string">'SIP'</span>, <span class="string">'ISS'</span>, <span class="string">'PPI'</span>, <span class="string">'IPP'</span>, <span class="string">'SSI'</span>, <span class="string">'MIS'</span>])
+
+<span class="keyword">print</span> len(find_unique_kmers(<span class="string">"MISSISSIPPI"</span>,<span class="number">3</span>))
+<span class="number">7</span>
+</code></pre>
 </div>
 </div>
 </div>
@@ -2781,21 +2817,21 @@ After add: set([1, 3, 5, 7])
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We&#39;re going to look at one more Python data type for storing collections of values: the <strong>dictionary</strong>.</p>
-<p>This is another built-in Python data type. Dictionaries are a bit like sets - they store unordered collections of items. But dictionaries store key-value pairs. Keys are used for indexing and must be unique. Values do not have to be unique.</p>
+<p>This is another built-in Python data type. Dictionaries are a bit like sets - they store unordered collections of items. But dictionaries store key-value pairs. &quot;Keys&quot; are used for indexing and must be unique. &quot;Values&quot; do not have to be unique.</p>
 <p>So, just like in sets, all keys in a dictionary must be unique - only one of each can be stored. Also like a set, the keys in a dictionary are stored in no particular order. </p>
-<p>Here&#39;s an example dictionary, which we&#39;ve defined using curly braces <code>{}</code>, and by putting a colon <code>:</code> between the key-value pairs. It stores some people&#39;s heights in centimetres.</p>
+<p>Here&#39;s an example dictionary, which we&#39;ve defined using curly braces <code>{}</code>, and by putting a colon <code>:</code> between the each key and its corresponding value. This dictionary stores some people&#39;s heights in centimetres.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[24]:
+In&nbsp;[25]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="n">height</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Sam&quot;</span><span class="p">:</span><span class="mi">201</span><span class="p">,</span> <span class="s">&quot;Fiona&quot;</span><span class="p">:</span><span class="mi">167</span><span class="p">,</span> <span class="s">&quot;Quentin&quot;</span><span class="p">:</span><span class="mi">167</span><span class="p">}</span>
-<span class="k">print</span> <span class="n">height</span>
+<div class="highlight"><pre><span class="n">heights</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Sam&quot;</span><span class="p">:</span><span class="mi">201</span><span class="p">,</span> <span class="s">&quot;Fiona&quot;</span><span class="p">:</span><span class="mi">167</span><span class="p">,</span> <span class="s">&quot;Quentin&quot;</span><span class="p">:</span><span class="mi">167</span><span class="p">}</span>
+<span class="k">print</span> <span class="n">heights</span>
 </pre></div>
 
 </div>
@@ -2819,6 +2855,37 @@ In&nbsp;[24]:
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[26]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">heights</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+&lt;type &apos;dict&apos;&gt;
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -2831,11 +2898,11 @@ In&nbsp;[24]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[25]:
+In&nbsp;[27]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">print</span> <span class="n">height</span><span class="p">[</span><span class="s">&quot;Sam&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span class="k">print</span> <span class="n">heights</span><span class="p">[</span><span class="s">&quot;Sam&quot;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -2871,11 +2938,11 @@ In&nbsp;[25]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[26]:
+In&nbsp;[28]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">print</span> <span class="n">height</span><span class="p">[</span><span class="s">&quot;Anne&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span class="k">print</span> <span class="n">heights</span><span class="p">[</span><span class="s">&quot;Anne&quot;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -2891,8 +2958,8 @@ In&nbsp;[26]:
 <pre>
 <span class="ansired">---------------------------------------------------------------------------</span>
 <span class="ansired">KeyError</span>                                  Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-26-2d6f8265a79e&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
-<span class="ansigreen">----&gt; 1</span><span class="ansired"> </span><span class="ansigreen">print</span> height<span class="ansiblue">[</span><span class="ansiblue">&quot;Anne&quot;</span><span class="ansiblue">]</span><span class="ansiblue"></span>
+<span class="ansigreen">&lt;ipython-input-28-4cd54d2a07f6&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">----&gt; 1</span><span class="ansired"> </span><span class="ansigreen">print</span> heights<span class="ansiblue">[</span><span class="ansiblue">&quot;Anne&quot;</span><span class="ansiblue">]</span><span class="ansiblue"></span>
 
 <span class="ansired">KeyError</span>: &apos;Anne&apos;</pre>
 </div>
@@ -2914,12 +2981,12 @@ In&nbsp;[26]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[27]:
+In&nbsp;[29]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="n">height</span><span class="p">[</span><span class="s">&quot;Mary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">180</span>
-<span class="k">print</span> <span class="n">height</span>
+<div class="highlight"><pre><span class="n">heights</span><span class="p">[</span><span class="s">&quot;Mary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">180</span>
+<span class="k">print</span> <span class="n">heights</span>
 </pre></div>
 
 </div>
@@ -2955,13 +3022,13 @@ In&nbsp;[27]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[28]:
+In&nbsp;[30]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="c"># apparently Quentin is still growing.. update his height to the new value</span>
-<span class="n">height</span><span class="p">[</span><span class="s">&quot;Quentin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">170</span>
-<span class="k">print</span> <span class="n">height</span>
+<span class="n">heights</span><span class="p">[</span><span class="s">&quot;Quentin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">170</span>
+<span class="k">print</span> <span class="n">heights</span>
 </pre></div>
 
 </div>
@@ -2997,11 +3064,11 @@ In&nbsp;[28]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[29]:
+In&nbsp;[31]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">print</span> <span class="p">(</span><span class="s">&quot;Anne&quot;</span> <span class="ow">in</span> <span class="n">height</span><span class="p">)</span>
+<div class="highlight"><pre><span class="k">print</span> <span class="p">(</span><span class="s">&quot;Anne&quot;</span> <span class="ow">in</span> <span class="n">heights</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -3028,11 +3095,11 @@ False
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[30]:
+In&nbsp;[32]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">print</span> <span class="p">(</span><span class="s">&quot;Fiona&quot;</span> <span class="ow">in</span> <span class="n">height</span><span class="p">)</span>
+<div class="highlight"><pre><span class="k">print</span> <span class="p">(</span><span class="s">&quot;Fiona&quot;</span> <span class="ow">in</span> <span class="n">heights</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -3059,14 +3126,14 @@ True
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[31]:
+In&nbsp;[33]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">if</span> <span class="s">&quot;Fiona&quot;</span> <span class="ow">in</span> <span class="n">height</span><span class="p">:</span>
-    <span class="k">print</span> <span class="s">&quot;Fiona&quot;</span><span class="p">,</span><span class="n">height</span><span class="p">[</span><span class="s">&quot;Fiona&quot;</span><span class="p">]</span>
-<span class="k">if</span> <span class="s">&quot;Anne&quot;</span> <span class="ow">in</span> <span class="n">height</span><span class="p">:</span>
-    <span class="k">print</span> <span class="s">&quot;Anne&quot;</span><span class="p">,</span><span class="n">height</span><span class="p">[</span><span class="s">&quot;Anne&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span class="k">if</span> <span class="s">&quot;Fiona&quot;</span> <span class="ow">in</span> <span class="n">heights</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&quot;Fiona&quot;</span><span class="p">,</span><span class="n">heights</span><span class="p">[</span><span class="s">&quot;Fiona&quot;</span><span class="p">]</span>
+<span class="k">if</span> <span class="s">&quot;Anne&quot;</span> <span class="ow">in</span> <span class="n">heights</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&quot;Anne&quot;</span><span class="p">,</span><span class="n">heights</span><span class="p">[</span><span class="s">&quot;Anne&quot;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -3102,11 +3169,11 @@ Fiona 167
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[32]:
+In&nbsp;[34]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">print</span> <span class="n">height</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<div class="highlight"><pre><span class="k">print</span> <span class="n">heights</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -3133,11 +3200,11 @@ In&nbsp;[32]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[33]:
+In&nbsp;[35]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">print</span> <span class="n">height</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+<div class="highlight"><pre><span class="k">print</span> <span class="n">heights</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -3173,7 +3240,7 @@ In&nbsp;[33]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[39]:
+In&nbsp;[36]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -3207,7 +3274,7 @@ In&nbsp;[39]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[35]:
+In&nbsp;[37]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -3256,7 +3323,7 @@ In&nbsp;[35]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[36]:
+In&nbsp;[38]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -3288,7 +3355,7 @@ In&nbsp;[36]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[37]:
+In&nbsp;[39]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -3356,7 +3423,7 @@ In&nbsp;[37]:
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In fact, dictionaries (and sets) are an implementation of <strong>hash tables</strong>, mentioned in lectures, and work by carrying out a hash function on the keys to decide where to store them in the computer&#39;s memory. This means that dictionaries are very fast at retrieving information. Even if you have a very large dictionary, finding an item in it using a key takes a roughly constant amount of time that does not grow with the size of the dictionary - the performance of the algorithm is O(1). </p>
-<p>&quot;Exact string matching&quot; is extremely fast and simple since we just need to test for equality, not carry out an alignment. If we store our known k-mers as keys of a dictionary, and we are given a new k-mer which we would like to match against them, then we also can search for matches in O(1) time simply by looking up the key.  </p>
+<p>&quot;Exact string matching&quot; is extremely fast and simple since we just need to test for equality, not carry out an alignment. If we store our known k-mers as keys of a dictionary, and we are given a new k-mer which we would like to match against them, then we also can search for matches across a huge dataset of known k-mers in O(1) time simply by looking up the key.  </p>
 <p>Performing <em>inexact</em> string matching can&#39;t be done using a hash table, since the hash function only gives the same result if the key is exactly the same. For approximate string matching, we need some kind of alignment algorithm. Not only is this slower for each string, we may need to carry it out on a large number of strings to find a match. This is why, when there are many reads, a hash-based algorithm like De Bruijn assembly is faster than an alignment-based assembly algorithm. It&#39;s also why some alignment algorithms use <em>seeds</em>, which we&#39;ll cover in the Week 5 lecture.</p>
 </div>
 </div>
@@ -3368,7 +3435,35 @@ In&nbsp;[37]:
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="challenge">Challenge</h4>
 <p>Write a function which takes a string and a kmer length k, and returns a dictionary. The keys of the dictionary should be the kmers found in the string, and the values should be the kmer counts.</p>
-<p>(TBD)</p>
+<pre><code class="language-python"><span class="keyword">print</span> count_kmers(<span class="string">"GATTACA"</span>,<span class="number">4</span>)
+{<span class="string">'ATTA'</span>: <span class="number">1</span>, <span class="string">'GATT'</span>: <span class="number">1</span>, <span class="string">'TACA'</span>: <span class="number">1</span>, <span class="string">'TTAC'</span>: <span class="number">1</span>}
+
+<span class="keyword">print</span> count_kmers(<span class="string">"MISSISSIPI"</span>,<span class="number">3</span>)
+{<span class="string">'IPI'</span>: <span class="number">1</span>, <span class="string">'ISS'</span>: <span class="number">2</span>, <span class="string">'MIS'</span>: <span class="number">1</span>, <span class="string">'SIP'</span>: <span class="number">1</span>, <span class="string">'SIS'</span>: <span class="number">1</span>, <span class="string">'SSI'</span>: <span class="number">2</span>}
+
+<span class="keyword">print</span> count_kmers(<span class="string">"CTCGGGGGCTATTAATACCTAAGTGCTCGGGGGCTATTAATACCTAAGTGGGGCTATT"</span>,<span class="number">3</span>)
+{<span class="string">'AAG'</span>: <span class="number">2</span>,
+ <span class="string">'AAT'</span>: <span class="number">2</span>,
+ <span class="string">'ACC'</span>: <span class="number">2</span>,
+ <span class="string">'AGT'</span>: <span class="number">2</span>,
+ <span class="string">'ATA'</span>: <span class="number">2</span>,
+ <span class="string">'ATT'</span>: <span class="number">3</span>,
+ <span class="string">'CCT'</span>: <span class="number">2</span>,
+ <span class="string">'CGG'</span>: <span class="number">2</span>,
+ <span class="string">'CTA'</span>: <span class="number">5</span>,
+ <span class="string">'CTC'</span>: <span class="number">2</span>,
+ <span class="string">'GCT'</span>: <span class="number">4</span>,
+ <span class="string">'GGC'</span>: <span class="number">3</span>,
+ <span class="string">'GGG'</span>: <span class="number">8</span>,
+ <span class="string">'GTG'</span>: <span class="number">2</span>,
+ <span class="string">'TAA'</span>: <span class="number">4</span>,
+ <span class="string">'TAC'</span>: <span class="number">2</span>,
+ <span class="string">'TAT'</span>: <span class="number">3</span>,
+ <span class="string">'TCG'</span>: <span class="number">2</span>,
+ <span class="string">'TGC'</span>: <span class="number">1</span>,
+ <span class="string">'TGG'</span>: <span class="number">1</span>,
+ <span class="string">'TTA'</span>: <span class="number">2</span>}
+</code></pre>
 </div>
 </div>
 </div>
