@@ -1,0 +1,264 @@
+---
+title: "Week 8 - Intro to R"
+output: html_document
+---
+
+This week is the first lab we'll do using the R programming language. So, we'll spend a fair amount of time introducing R. If you already know R, you may be able to go quickly through most of this document. At the end of the lab, we'll use R to fit a simple linear model to some data.
+
+R is a programming language. It is widely used in statistics, so it has basic statistics functions built-in, and many advanced statistics libraries are written in it. It also has some language features helpful for statistics, such as the special syntax for fitting models to data.
+
+If you're new to R, the best way to remember how to use it is to not just read - try typing in the below commands yourself, and experiment.
+
+###Preparation
+
+We'll use RStudio, which is an interactive development environment for the R programming language. If you have set up a Research Cloud instance and have run the command-line setup scripts as described in the Week 1 lab, you already have RStudio installed on it. Just point a web browser to <http://your-ip-address/rstudio> and log in as researcher.
+
+**Important: your Research Cloud instances are virtual machines and are not backed up. If they crash, you could lose everything that was on them. If you do any work on them that you'd like to keep, you should download a backup copy of your work at the end of your session. You can download saved files from RStudio using the Files tab at the lower-right. Select any saved files you want, and use More->Export to download them.**
+
+If want to use your own computer, you can (only if you want to) install R (<http://cran.r-project.org/>) and RStudio (<http://www.rstudio.com/products/rstudio/download/>) instead of using a server.
+
+It's worth realising that although we will use RStudio, it is not needed to use R - if you have R installed you can enter a (less sophisticated) interactive R environment from the command-line just by typing `R`.
+You can then leave this environment by typing `quit()`.
+
+You can also run R scripts directly from the command-line with the `Rscript` command.
+
+###RStudio
+
+RStudio is an interactive environment for running R. Once you've logged into it, you should see:
+
+  * The Console (entire left)
+  * Workspace/History (tabbed in upper right)
+  * Files/Plots/Packages/Help (tabbed in lower right)
+
+Your demonstrator will give a quick overview of these. Mostly you will work in the Console, where you can type in R code, run it immediately, and see the output. However you may also want to write and save an R script, which you can do from the File menu.
+
+### R fundamentals: variables and functions, getting help
+
+If you're new to programming, you will have seen variables and functions before in our Python workshop. These concepts apply to all programming languages, including R.
+
+R has a special operator for assigning a value to a variable, which looks like <- (that's two characters, < and - with no space in between them).
+```{r}
+x <- 5
+print(x)
+```
+
+You can also just use =, like this:
+```{r}
+# This does the same thing
+x = 5
+print(x)
+```
+
+Just as in Python, strings have quotes around them:
+```{r}
+mystring = "This is a string"
+print(mystring)
+```
+
+and we can do maths:
+```{r}
+y <- 7 + x
+print(y)
+```
+
+Like most programming languages, R has functions. You can define your own functions, but most of the time in our workshops we will just use built-in R functions, or functions from statistics libraries. As usual, functions are called by putting their parameters in brackets, and they can return a value. Let's try `sqrt()`, which is a built-in R function that calculates the square root.
+```{r}
+z = sqrt(5)
+print(z)
+```
+
+One very useful feature of the interactive R environment is that you can get help with the `help()` function, or if you prefer, the `?` operator. Just type `?` followed by the function you want help for:
+```{r eval=FALSE}
+# This gets documentation
+help(sqrt)
+# So does this
+?sqrt
+```
+
+Another way to solve problems is the `str()` function. `str()` stands for *structure*, and is extremely useful for troubleshooting. It gives you information about a variable, such as the type, size and contents. When we start dealing with more complicated data types like lists or data frames, str() will become very useful.
+```{r}
+str(x)
+```
+
+Try it out: run str() on some of the other variables we created above.
+
+###Libraries
+
+R has libraries which provide lots of extra functions. These will be very important for us, since we'd like to use libraries designed for transcriptomics. Many libraries for bioinformatics in R can be found in the Bioconductor project (<http://www.bioconductor.org/>).
+
+Libraries can be loaded with the `library()` function. Let's try loading limma, which has functions for differential gene expression analysis for both microarray and RNA-seq data. This will work if you're on a GVL Research Cloud instance, which should already have limma installed. Otherwise, you might have to skip ahead and see how to install libraries.
+
+```{r eval=FALSE}
+library("limma")
+```
+
+This loads limma. All the functions in the limma library will now work. We can also now get help on the limma library with
+
+```{r eval=FALSE}
+?limma
+```
+which will tell us how to find more detailed documentation.
+
+The usual way to install a library into R is with the `install.packages()` function. For Bioconductor packages there is a special method:
+
+```{r eval=FALSE}
+source("http://bioconductor.org/biocLite.R")
+biocLite("limma")
+```
+
+This installs limma. 
+
+Try to also install the Bioconductor package edgeR now.
+
+### Data structures in R
+
+We won't do a lot of complex programming in R, but we will use it for data analysis, so we need to understand how to manipulate data! We'll go through the most important data types.
+
+#### Vectors and Lists
+
+Vectors and lists store collections of variables. If you're new to programming you have probably seen lists in Python - they looked like `[1,3,5]`. R's vectors and lists are quite similar: ordered collections of items, assigned to a variable.
+
+One way to make a vector is with the `c()` function, which means "concatenate".
+```{r}
+odd.numbers <- c(1,3,5,7)
+print(odd.numbers)
+```
+
+By the way, you might notice there is a dot (`.`) in the variable name. This has no special meaning in R (unlike some other languages), it's just part of the variable name.
+
+Some more handy ways to make vectors of numbers: 
+```{r}
+# Numbers from 1 to 10
+all.numbers <- 1:10
+print(all.numbers)
+
+# Numbers from 1 to 10, step size of two
+odd.numbers <- seq(1,10,2)
+print(odd.numbers)
+```
+
+Vectors can be indexed and sliced (just like in Python!). However unlike Python, the first item is indexed with `1`, not `0`.
+```{r}
+# The first value
+odd.numbers[1]
+
+# The second value
+odd.numbers[2]
+
+# Second to fourth
+odd.numbers[2:4]
+```
+
+These atomic vectors are the most fundamental type in R. Even when you write `x <- 5`, you are actually making a vector of length 1, exactly as if you'd written `x <- c(5)`.
+
+**Lists** in R are also ordered collections of items, but unlike vectors, they don't all have to be of the same type:
+```{r}
+mylist <- list(1,"a string",5.3)
+print(mylist)
+```
+
+We won't go into these in detail, but data frames, which we'll look at soon, are really just lists of vectors.
+
+#### Matrices
+
+A matrix in R is like a two-dimensional vector: a grid of numbers.
+
+```{r}
+# Make a matrix with two rows
+nums <- c(1, 5, 1.5, 4.5, 3.5, 5.3, 3.1, 5.1)
+X <- matrix(nums, nrow=2)
+print(X)
+```
+
+Matrices will be useful when we want to describe tables of gene expression values. Let's assign names to the rows and columns to illustrate this:
+
+```{r}
+# Genes on rows, samples on columns
+rownames(X) <- c("Gene 1", "Gene 2")
+colnames(X) <- c("Untreated_1", "Untreated_2", "Treated_1", "Treated_2")
+print(X)
+```
+
+We can index and slice a matrix using vectors of numbers. 
+```{r}
+# First row, second column
+X[1,2]
+
+# Rows 1-2, columns 2-4
+X[1:2,2:4]
+
+# Leave out the column index to mean all columns
+X[2,]
+```
+
+We'll use matrices to define the *design matrix* and *contrast matrix* when doing differential expression analyses.
+
+#### Data Frames
+
+Data frames are the last data type we'll look at. They are one of the most important features of R, and are what we'll almost always use for tabular data and for statistics. R has convenient functions for reading tables of values from text files and turning them into data frames. 
+
+You can think of a data frame like a spreadsheet: columns of values, where each column has a name and can be a different type of variable. 
+
+```{r}
+# Use the data.frame() function to make a data frame
+# Use three vectors made with c() as the columns
+df <- data.frame(firstname=c("Simon", "Alex", "Ruby"), lastname=c("Smith", "Anders", "Anders"), height=c(182,162,164))
+print(df)
+```
+
+You can index the elements of a data frame like a matrix, like `df[1, 2:3]`. You can also refer to columns by name, like `df["height"]`:
+```{r}
+df["height"]
+```
+
+Remember the `str()` function that tells us about a variable's type and structure? Now that we've seen some more advanced data structures, `str()` will be much more useful. Try it out on data frames with `str(df)`, and on some of the other types we've seen.
+
+### Vectorisation
+
+We haven't talked about how to write a for loop in R. It's possible, but for our data analysis we usually won't need to! This is because R has **vectorised** nearly all it's functions and operators: if you apply them to a vector they automatically work for the whole vector. So 
+```{r}
+x <- 5
+print(x+2)
+```
+may not be surprising if you're used to other programming languages, but
+```{r}
+v <- c(1,2,3,4,5)
+print(v+2)
+```
+might be.
+
+This will work for other operators, like `**` (to the power of):
+```{r}
+v <- c(1,2,3,4,5)
+print(v**3)
+```
+
+And it will work for many functions:
+```{r}
+v <- c(1,2,3,4,5)
+print(sqrt(v))
+```
+
+In R, using vectorised functions is usually much more efficient than using loops.
+
+### Plots
+
+R is particularly useful for drawing plots. The simplest way is the `plot()` function:
+```{r}
+numbers = 1:10
+cubed.numbers = numbers**3
+plot(cubed.numbers)
+```
+
+There are many advanced libraries and techniques for plotting in R, but it's too big a topic to go through here. We will cover what we need as we need it. Remember that you can see documentation with `?plot`. There are a few other basic plotting functions, such as `hist()` (for histograms), and `boxplot()`.
+
+If you draw a plot in RStudio, it will appear in the **Plots** tab in the lower-right pane.
+
+### Other resources
+
+There are many tutorials on R. One nice option is the `swirl` library, which gives you an interactive tutorial on the basics. If you want to try it, use
+```{r eval=FALSE}
+install.packages("swirl")
+library("swirl")
+swirl()
+```
