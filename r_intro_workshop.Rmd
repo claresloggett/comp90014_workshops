@@ -1,11 +1,11 @@
 ---
-title: "Week 8 - Intro to R"
+title: "Week 8 - Introduction to R"
 output: html_document
 ---
 
 This week is the first lab we'll do using the R programming language. So, we'll spend a fair amount of time introducing R. If you already know R, you may be able to go quickly through most of this document. At the end of the lab, we'll use R to fit a simple linear model to some data.
 
-R is a programming language. It is widely used in statistics, so it has basic statistics functions built-in, and many advanced statistics libraries are written in it. It also has some language features helpful for statistics, such as the special syntax for fitting models to data.
+R is a programming language. It is widely used in statistics, so it has basic statistics functions built-in, and many advanced statistics libraries are written in it. 
 
 If you're new to R, the best way to remember how to use it is to not just read - try typing in the below commands yourself, and experiment.
 
@@ -206,9 +206,9 @@ df <- data.frame(firstname=c("Simon", "Alex", "Ruby"), lastname=c("Smith", "Ande
 print(df)
 ```
 
-You can index the elements of a data frame like a matrix, like `df[1, 2:3]`. You can also refer to columns by name, like `df["height"]`:
+You can index the elements of a data frame like a matrix, like `df[1, 2:3]`. You can also refer to columns by name, like `df["height"]`, or using the `$` operator, like `df$height`:
 ```{r}
-df["height"]
+df$height
 ```
 
 Remember the `str()` function that tells us about a variable's type and structure? Now that we've seen some more advanced data structures, `str()` will be much more useful. Try it out on data frames with `str(df)`, and on some of the other types we've seen.
@@ -253,6 +253,75 @@ plot(cubed.numbers)
 There are many advanced libraries and techniques for plotting in R, but it's too big a topic to go through here. We will cover what we need as we need it. Remember that you can see documentation with `?plot`. There are a few other basic plotting functions, such as `hist()` (for histograms), and `boxplot()`.
 
 If you draw a plot in RStudio, it will appear in the **Plots** tab in the lower-right pane.
+
+### Regression Models
+
+In linear regression, we want to fit a model to data. For instance, if we think our data should fit a model like
+$$y = a x + b$$
+then, given data points for $y$ and $x$, we'd like to use regression to find the coefficients $a$ and $b$.
+
+R has a special data type and syntax for defining a formula, which we can then use as a model to fit to data. The `~` operator is used for this.
+```{r}
+model <- y ~ x
+print(model)
+```
+This means that we think `y` is a linear function of `x`. We don't need to write the coefficients out explicitly: `y ~ x` is enough. If we give the `lm()` function this model, and some data for `x` and `y`, it will attempt to fit the model to the data. 
+
+We can pass our data in to `lm()` as a data frame, and the $y$ and $x$ will then refer to columns of the data frame. 
+
+Let's illustrate with a realistic problem.
+
+#### RNA-seq and GC content
+
+One factor that can affect our experiments is the **GC content** of the DNA sequence. This simply means what percentage of the base pairs are G-C, as opposed to A-T. If the DNA were random, the GC content would on average be 50%, but in real DNA there are many factors which can affect GC content. 
+
+In DNA molecules, G binds to C much more strongly than A binds to T. This can affect our sequencing experiments.
+
+In this experiment, RNA-seq counts for six different regions of the same gene were counted across multiple experiments to produce a total count for each region.
+We hypothesise that counts from this gene are influenced by GC content of the sequence and the length of the region examined.
+
+More specifically, the model we will try to fit is
+```{r eval=FALSE}
+log(counts) ~ log(sizes) + gc
+```
+
+Let's look at some data.
+```{r}
+# Length of each region
+sizes = c(489, 694, 813, 920, 1211, 2407)
+
+# GC content of each region
+gc = c(0.68, 0.54, 0.44, 0.43, 0.57, 0.58)
+
+# RNA-seq counts obtained for each region
+counts = c(37035, 46293, 39504, 44442, 74070, 177768)
+
+# Put our three variables into a data frame
+# Notice that R keeps their names as column names!
+data = data.frame(counts, sizes, gc)
+print(data)
+
+# What does the data look like?
+plot(data$counts, data$sizes)
+plot(data$counts, data$gc)
+```
+
+The `lm()` function will return a data structure containing the results of the fit, including the coefficients. 
+
+```{r}
+# Fit the model using lm()
+fit = lm(log(counts) ~ log(sizes) + gc, data)
+
+# Examine the resulting data structure
+summary(fit)
+```
+
+Calling `plot()` on the fit object will give custom behaviour - try it in your RStudio session.
+
+```{r eval=FALSE}
+plot(fit)
+```
+
 
 ### Other resources
 
