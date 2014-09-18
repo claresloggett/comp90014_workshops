@@ -321,11 +321,13 @@ data = data.frame(counts, sizes, gc)
 print(data)
 
 # What does the data look like?
-plot(data$counts, data$sizes)
-plot(data$counts, data$gc)
+# Plot with two vectors will give plot(x,y)
+plot(data$sizes, data$counts)
 ```
 
-The `lm()` function will return a data structure containing the results of the fit, including the coefficients. 
+It looks plausible that `counts` does depend on `sizes`. Try for yourself to plot `counts` against `gc`.
+
+Now we'll fit the model to the data. The `lm()` function will return a data structure containing the results of the fit, including the coefficients. 
 
 ```{r}
 # Fit the model using lm()
