@@ -130,7 +130,7 @@ biocLite(&quot;limma&quot;)</code></pre>
 <p>We won’t do a lot of complex programming in R, but we will use it for data analysis, so we need to understand how to manipulate data! We’ll go through the most important data types.</p>
 <div id="vectors-and-lists" class="section level4">
 <h4>Vectors and Lists</h4>
-<p>Vectors and lists store collections of variables. If you’re new to programming you have probably seen lists in Python - they looked like <code>[1,3,5]</code>. R’s vectors and lists are quite similar: ordered collections of items, assigned to a variable.</p>
+<p>Vectors and lists store collections of values. If you’re new to programming you have probably seen lists in Python - they looked like <code>[1,3,5]</code>. R’s vectors and lists are quite similar: ordered collections of items, assigned to a variable.</p>
 <p>One way to make a vector is with the <code>c()</code> function, which means “concatenate”.</p>
 <pre class="r"><code>odd.numbers &lt;- c(1,3,5,7)
 print(odd.numbers)</code></pre>
@@ -292,7 +292,7 @@ hist(x)</code></pre>
 print(model)</code></pre>
 <pre><code>## y ~ x</code></pre>
 <p>This means that we think <code>y</code> is a linear function of <code>x</code>. We don’t need to write the coefficients out explicitly: <code>y ~ x</code> is enough. If we give the <code>lm()</code> function this model, and some data for <code>x</code> and <code>y</code>, it will attempt to fit the model to the data.</p>
-<p>We can pass our data in to <code>lm()</code> as a data frame, and the <span class="math">\(y\)</span> and <span class="math">\(x\)</span> will then refer to columns of the data frame.</p>
+<p>We can pass our data in to <code>lm()</code> as a data frame, and the <code>y</code> and <code>x</code> will then refer to columns of the data frame.</p>
 <p>Let’s illustrate with a realistic problem.</p>
 <div id="rna-seq-and-gc-content" class="section level4">
 <h4>RNA-seq and GC content</h4>
