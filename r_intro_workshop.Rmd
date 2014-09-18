@@ -32,6 +32,8 @@ RStudio is an interactive environment for running R. Once you've logged into it,
 
 Your demonstrator will give a quick overview of these. Mostly you will work in the Console, where you can type in R code, run it immediately, and see the output. However you may also want to write and save an R script, which you can do from the File menu.
 
+One useful thing to know how to do is to save your Console History as a file - i.e. save all the commands you've entered. You can see your history in the History tab in the upper right, and save it to a file with the Save icon. This saves to a file on the server where RStudio is running - you still need to download it if you want an offline copy.
+
 ### R fundamentals: variables and functions, getting help
 
 If you're new to programming, you will have seen variables and functions before in our Python workshop. These concepts apply to all programming languages, including R.
@@ -202,20 +204,34 @@ You can think of a data frame like a spreadsheet: columns of values, where each 
 ```{r}
 # Use the data.frame() function to make a data frame
 # Use three vectors made with c() as the columns
-df <- data.frame(firstname=c("Simon", "Alex", "Ruby"), lastname=c("Smith", "Anders", "Anders"), height=c(182,162,164))
+df <- data.frame(firstname=c("Simon", "Alex", "Ruby"), lastname=c("Smith", "Anders", "Anders"), height=c(182,162,174))
 print(df)
 ```
 
 You can index the elements of a data frame like a matrix, like `df[1, 2:3]`. You can also refer to columns by name, like `df["height"]`, or using the `$` operator, like `df$height`:
 ```{r}
 df$height
+df$firstname[1]
 ```
+
+One very common way to manipulate data is *boolean indexing*, which means we can get all the rows or columns of a data frame where some condition is true. For instance, to get all the rows where the surname is "Anders":
+```{r}
+# The condition gives a vector of true/false values
+df$lastname == "Anders"
+
+# Indexing with the vector on rows gives just the rows where this is true
+df[ df$lastname == "Anders", ]
+```
+
+See if you can extract the names of people with heights more than 170cm.
 
 Remember the `str()` function that tells us about a variable's type and structure? Now that we've seen some more advanced data structures, `str()` will be much more useful. Try it out on data frames with `str(df)`, and on some of the other types we've seen.
 
 ### Vectorisation
 
-We haven't talked about how to write a for loop in R. It's possible, but for our data analysis we usually won't need to! This is because R has **vectorised** nearly all it's functions and operators: if you apply them to a vector they automatically work for the whole vector. So 
+You might have noticed that above, we applied `==` to a vector, and got back a vector of TRUE/FALSE values.
+
+We haven't talked about how to write a for loop in R. It's possible, but for our data analysis we usually won't need to! This is because R has **vectorised** nearly all its functions and operators: if you apply them to a vector they automatically work for the whole vector. So 
 ```{r}
 x <- 5
 print(x+2)
@@ -240,6 +256,10 @@ print(sqrt(v))
 ```
 
 In R, using vectorised functions is usually much more efficient than using loops.
+
+Questions: What do you think `v + v` will give? 
+
+If `a <- c(1,3,5,7)` and `b <- c(1,10)`, what will `a + b` give? This second question is tricky as R doesn't do what you might think - try it out.
 
 ### Plots
 
