@@ -77,7 +77,7 @@ plot(y, type=&quot;l&quot;)</code></pre>
 <h3>Get the data</h3>
 <p>This data comes from a deep RNA-sequencing study on participants in the 1000 genomes project. We’ve provided a table of counts, which was created by aligning RNA-seq data to the reference genome, and counting the reads aligned to each gene using HTseq (this tool should be installed into Galaxy on your cloud instance).</p>
 <p>To download the data from within R, run</p>
-<pre class="r"><code>download.file(&quot;http://claresloggett.github.io/comp90014_workshops/coriell_10s_data.tsv&quot;)</code></pre>
+<pre class="r"><code>download.file(&quot;http://claresloggett.github.io/comp90014_workshops/coriell_10s_data.tsv&quot;, &quot;coriell_10s_data.tsv&quot;)</code></pre>
 <p>R has an extremely useful set of functions for reading tabular data into a data frame variable. The core one is <code>read.table()</code>. We’ll give it the filename and tell it that the columns in the file are tab-separated (“\t” stands for the tab character), and that the top row is the header with the column names.</p>
 <pre class="r"><code>alldata &lt;- read.table(&quot;coriell_10s_data.tsv&quot;, header=TRUE, sep=&quot;\t&quot;)</code></pre>
 <p>Let’s explore this data a bit. The size of the table:</p>

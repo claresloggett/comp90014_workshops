@@ -38,7 +38,7 @@ This data comes from a deep RNA-sequencing study on participants in the 1000 gen
 
 To download the data from within R, run
 ```{r eval=FALSE}
-download.file("http://claresloggett.github.io/comp90014_workshops/coriell_10s_data.tsv")
+download.file("http://claresloggett.github.io/comp90014_workshops/coriell_10s_data.tsv", "coriell_10s_data.tsv")
 ```
 
 R has an extremely useful set of functions for reading tabular data into a data frame variable. The core one is `read.table()`. We'll give it the filename and tell it that the columns in the file are tab-separated ("\\t" stands for the tab character), and that the top row is the header with the column names.
