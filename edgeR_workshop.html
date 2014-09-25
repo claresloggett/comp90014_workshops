@@ -221,6 +221,16 @@ heatmap(topgene.log.expression, col=redtogreen)</code></pre>
 <pre class="r"><code>hist(results$table$PValue, breaks=150)</code></pre>
 <p>The <code>breaks</code> parameter specifies how fine-grained the histogram is - we need to set it above the default to see the P-value structure. We’d expect that if there is no differential expression present, the P-values would just be distributed uniformly, from 0 to 1. If there is differential expression, there should be some extra P-values at low values, below 0.05. What do you actually see?</p>
 </div>
+<div id="sanity-checking-random-shuffling" class="section level3">
+<h3>Sanity checking: random shuffling</h3>
+<p>There is pretty strong differential expression of some genes between women and men. What would our results look like if there had been <em>no</em> significant differential expression?</p>
+<p>One way to sanity-check our results is to repeat the analysis, but assign each sample randomly to groups instead of to the correct groups of women vs men. In theory, there should be no significant differential expression between these randomly-assigned groups.</p>
+<p>Here’s how you can make a random vector of zeroes and ones:</p>
+<pre class="r"><code>randomgroup = sample(c(0,1), 20, replace=TRUE)
+randomgroup</code></pre>
+<pre><code>##  [1] 0 1 0 0 1 1 1 0 1 0 1 0 0 1 0 1 1 0 0 1</code></pre>
+<p>If you carry our your DGE analysis but give edgeR <code>randomgroup</code> in place of <code>ismale</code>, what do you expect to see?</p>
+</div>
 
 
 </div>
