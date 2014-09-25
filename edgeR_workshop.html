@@ -134,7 +134,7 @@ filtered &lt;- alldata[!low_counts,]</code></pre>
 <p>Try using the <code>dim()</code> function to get the size of the filtered data frame. Is it different to the size of the original data frame?</p>
 <p>Finally, we’ll split our filtered data into the expression values (first 20 columns) and the gene reference information. Run the following commands:</p>
 <pre class="r"><code>expression &lt;- filtered[,1:20]
-geneinfo &lt;- filtered[21:24]</code></pre>
+geneinfo &lt;- filtered[,21:24]</code></pre>
 </div>
 <div id="edger" class="section level3">
 <h3>edgeR</h3>
@@ -228,7 +228,7 @@ heatmap(topgene.log.expression, col=redtogreen)</code></pre>
 <p>Here’s how you can make a random vector of zeroes and ones:</p>
 <pre class="r"><code>randomgroup = sample(c(0,1), 20, replace=TRUE)
 randomgroup</code></pre>
-<pre><code>##  [1] 1 0 0 0 0 0 1 1 1 1 0 1 0 0 1 0 0 1 0 1</code></pre>
+<pre><code>##  [1] 1 0 0 1 1 1 1 1 1 1 0 0 1 0 1 1 1 0 0 0</code></pre>
 <p>If you carry our your DGE analysis but give edgeR <code>randomgroup</code> in place of <code>ismale</code>, what do you expect to see?</p>
 </div>
 

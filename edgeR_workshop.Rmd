@@ -100,7 +100,7 @@ Try using the `dim()` function to get the size of the filtered data frame. Is it
 Finally, we'll split our filtered data into the expression values (first 20 columns) and the gene reference information. Run the following commands:
 ```{r}
 expression <- filtered[,1:20]
-geneinfo <- filtered[21:24]
+geneinfo <- filtered[,21:24]
 ```
 
 ### edgeR
