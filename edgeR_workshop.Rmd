@@ -228,3 +228,7 @@ randomgroup
 
 If you carry our your DGE analysis but give edgeR `randomgroup` in place of `ismale`, what do you expect to see?
 
+**Extra: Degust** 
+
+Degust is a useful tool mentioned in the lab. It uses the R library limma (by the same group as edgeR) to generate interactive differential expression plots. If you want to play with it, it is at http://www.vicbioinformatics.com/software.degust.shtml and we've temporarily loaded in today's data [here](http://www.vicbioinformatics.com/degust/compare.html?code=fadd6cc8160b74410a013a7347a2870e).
+

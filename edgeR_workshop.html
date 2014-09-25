@@ -228,8 +228,10 @@ heatmap(topgene.log.expression, col=redtogreen)</code></pre>
 <p>Here’s how you can make a random vector of zeroes and ones:</p>
 <pre class="r"><code>randomgroup = sample(c(0,1), 20, replace=TRUE)
 randomgroup</code></pre>
-<pre><code>##  [1] 1 0 0 1 1 1 1 1 1 1 0 0 1 0 1 1 1 0 0 0</code></pre>
+<pre><code>##  [1] 0 0 1 0 1 1 1 0 1 1 1 1 0 1 0 1 1 0 1 0</code></pre>
 <p>If you carry our your DGE analysis but give edgeR <code>randomgroup</code> in place of <code>ismale</code>, what do you expect to see?</p>
+<p><strong>Extra: Degust</strong></p>
+<p>Degust is a useful tool mentioned in the lab. It uses the R library limma (by the same group as edgeR) to generate interactive differential expression plots. If you want to play with it, it is at <a href="http://www.vicbioinformatics.com/software.degust.shtml">http://www.vicbioinformatics.com/software.degust.shtml</a> and we’ve temporarily loaded in today’s data <a href="http://www.vicbioinformatics.com/degust/compare.html?code=fadd6cc8160b74410a013a7347a2870e">here</a>.</p>
 </div>
 
 
