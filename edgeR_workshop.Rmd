@@ -149,7 +149,7 @@ Next, use edgeR's normalisation function, `calcNormFactors()` to scale each samp
 dge <- calcNormFactors(dge)
 ```
 
-Now that we have normalised expression counts, let's try visualising them with an MDS plot. MDS stands for "multi-dimensional scaling"" and will be covered in later lectures. The `MDSplot()` function will treat the differences between counts as the "distance" between samples, and will try to show us approximately this distance on a two-dimensional plot.
+Now that we have normalised expression counts, let's try visualising them with an MDS plot. MDS stands for "multi-dimensional scaling" and will be covered in later lectures. The `MDSplot()` function will treat the differences between counts as the "distance" between samples, and will try to show us approximately this distance on a two-dimensional plot.
 ```{r eval=FALSE}
 plotMDS(dge)
 ```
