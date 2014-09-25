@@ -112,7 +112,7 @@ alldata[1:3,1:10]</code></pre>
 <p>Data frames can be indexed in several ways, including:</p>
 <ul>
 <li>Numerical vectors specifying which rows/columns we want, e.g. <code>alldata[1:3,1:10]</code></li>
-<li>Logical (TRUE/FALSE) vectors. These will return any rows/columns corresponding to TRUE values in the vector. For instance, `alldata[alldata$chromosome_name == “Y”,] returns rows where the chromosome name is Y.</li>
+<li>Logical (TRUE/FALSE) vectors. These will return any rows/columns corresponding to TRUE values in the vector. For instance, <code>alldata[alldata$chromosome_name == &quot;Y&quot;,]</code> returns rows where the chromosome name is Y.</li>
 <li>Names of columns or rows. The count for patient M00103_M, gene ENSG00000156639, can be retrieved with <code>alldata[&quot;ENSG00000156639&quot;,&quot;M00103_M&quot;]</code></li>
 </ul>
 </div>
@@ -228,7 +228,7 @@ heatmap(topgene.log.expression, col=redtogreen)</code></pre>
 <p>Here’s how you can make a random vector of zeroes and ones:</p>
 <pre class="r"><code>randomgroup = sample(c(0,1), 20, replace=TRUE)
 randomgroup</code></pre>
-<pre><code>##  [1] 0 1 0 0 1 1 1 0 1 0 1 0 0 1 0 1 1 0 0 1</code></pre>
+<pre><code>##  [1] 0 0 1 0 1 0 0 0 1 1 1 1 1 0 0 0 1 1 0 1</code></pre>
 <p>If you carry our your DGE analysis but give edgeR <code>randomgroup</code> in place of <code>ismale</code>, what do you expect to see?</p>
 </div>
 

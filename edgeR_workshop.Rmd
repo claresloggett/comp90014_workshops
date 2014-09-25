@@ -74,7 +74,7 @@ alldata[1:3,1:10]
 Data frames can be indexed in several ways, including:
 
 - Numerical vectors specifying which rows/columns we want, e.g. `alldata[1:3,1:10]`
-- Logical (TRUE/FALSE) vectors. These will return any rows/columns corresponding to TRUE values in the vector. For instance, `alldata[alldata$chromosome_name == "Y",] returns rows where the chromosome name is Y.
+- Logical (TRUE/FALSE) vectors. These will return any rows/columns corresponding to TRUE values in the vector. For instance, `alldata[alldata$chromosome_name == "Y",]` returns rows where the chromosome name is Y.
 - Names of columns or rows. The count for patient M00103_M, gene ENSG00000156639, can be retrieved with `alldata["ENSG00000156639","M00103_M"]`
 
 ### Filter out genes with zeroes: the *apply* function
