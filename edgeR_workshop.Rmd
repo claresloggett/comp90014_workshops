@@ -144,17 +144,26 @@ dge = DGEList(expression, group=ismale)
 ```
 We haven't actually done any differential expression analysis yet, just packaged the count data for edgeR to use. Try `help(DGEList)` for details.
 
-Next, carry out edgeR's normalisation and model-fitting steps on our data:
-
-- use `calcNormFactors()` to scale each sample's counts to take into account that different experiments might have different total quantities of RNA (different "library sizes"). The default is to use TMM (trimmed mean) normalisation, mentioned in lectures.
-- use `estimateCommonDisp()` to fit the data to get an estimate of the dispersion parameter (the variance) in the negative binomial distribution used to model randomness in RNA-seq counts.  
-- use `estimateTagwiseDisp()` to get *per-gene* estimates of the variance. Because there are many more genes than there are samples, we risk overfitting these estimates to our particular data. edgeR uses the common dispersion from the previous step to create a Bayesian prior, so that the variances of different genes become related to one another and "smoothed out".
-
-To apply these steps, just call each function on the DGEList object and store the new value, like
+Next, use edgeR's normalisation function, `calcNormFactors()` to scale each sample's counts to take into account that different experiments might have different total quantities of RNA (different "library sizes"). The default is to use TMM (trimmed mean) normalisation, mentioned in lectures. 
 ```{r}
 dge <- calcNormFactors(dge)
 ```
-Apply all three steps.
+
+Now that we have normalised expression counts, let's try visualising them with an MDS plot. MDS stands for "multi-dimensional scaling"" and will be covered in later lectures. The `MDSplot()` function will treat the differences between counts as the "distance" between samples, and will try to show us approximately this distance on a two-dimensional plot.
+```{r eval=FALSE}
+plotMDS(dge)
+```
+
+Notice that the male and female samples do seem to be separated. This is encouraging. If you'd like, you can use the `col` parameter of `plotMDS()` to highlight which samples are in which group, by passing in a vector of colours in the same order as the samples. For instance, a vector of ten red and ten blue could be specified with `col=c( rep("red",10), rep("blue",10) )`.
+
+Now let's do our DGE analysis. Carry out edgeR's model-fitting steps on our data:
+
+- use `estimateCommonDisp()` to fit the data to get an estimate of the dispersion parameter (the variance) in the negative binomial distribution used to model randomness in RNA-seq counts.  
+- use `estimateTagwiseDisp()` to get *per-gene* estimates of the variance. Some genes may be naturally more variable than others. Because there are many more genes than there are samples, we risk overfitting these estimates to our particular data. edgeR uses the common dispersion from the previous step to create a Bayesian prior, so that the variances of different genes become related to one another and "smoothed out".
+
+To apply these steps, just call each function on the DGEList object and store the new value, just as we did for `calcNormFactors()`.
+
+Apply both steps.
 ```{r echo=FALSE}
 dge <- estimateCommonDisp(dge)
 dge <- estimateTagwiseDisp(dge)
@@ -176,3 +185,33 @@ to see the top 20 genes, sorted by P-value. You can sort by log fold change rath
 **Think:** earlier, we stored a table of information about each gene in the `geneinfo` data frame. How can you look up the information on the top differentially-expressed genes? As a hint, you can get the *names* of these genes with a command like `rownames(topTags(results, n=20))`. If you aren't sure how to do this, ask a demonstrator.
 
 We should expect to see a lot of genes from the Y chromosome in this top list. What genes do you see that are *not* from the Y chromosome? What do they do?
+
+### Visualisation
+
+**Note:** You can download any images you produce from the **Plots** tab, using **Export -> Save as Image**.
+
+A very common way to visualise expression data is as a *heatmap*. A heatmap is a two-dimensional grid showing colours which correspond to the expression values. R's `heatmap()` function will perform clustering of similar samples and genes, and will draw this grid, which should make it clear that there are sets of genes which have higher or lower expression in one group or the other.
+
+We don't want to include every gene in our heatmap, as it would be too hard to see (and slow to calculate). So we'll use the top differentially expressed genes. You can adjust `n=20` below to choose the number of genes to include.
+
+The edgeR User Guide recommends using the log of the normalised expression counts as the values in the heatmap. 
+```{r eval=FALSE}
+topgenes <- rownames(topTags(results, n=20))
+log.dge <- cpm(dge, prior.count=2, log=TRUE)
+topgene.log.expression <- log.dge[topgenes,]
+heatmap(topgene.log.expression)
+```
+
+The default colour scheme can make it hard to see what's going on sometimes. You can adjust it to anything you like. For instance, for red-to-green:
+```{r eval=FALSE}
+redtogreen <- colorRampPalette(c("red", "yellow", "green"))(n=299)
+heatmap(topgene.log.expression, col=redtogreen)
+```
+
+Another useful plot to draw can be the distribution of P-values. You can draw this with
+```{r eval=FALSE}
+hist(results$table$PValue, breaks=150)
+```
+The `breaks` parameter specifies how fine-grained the histogram is - we need to set it above the default to see the P-value structure. We'd expect that if there is no differential expression present, the P-values would just be distributed uniformly, from 0 to 1. If there is differential expression, there should be some extra P-values at low values, below 0.05. What do you actually see?
+
+
