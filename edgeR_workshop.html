@@ -55,7 +55,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 
 
-<p>This week we’ll use the Bioconductor package edgeR to carry out differential gene expression in R, and learn some more useful R commands. This lab is also intended to help you get started on the assignment, which will use related data.</p>
+<p>This week we’ll use the <a href="http://www.bioconductor.org/">Bioconductor</a> package <a href="http://www.bioconductor.org/packages/release/bioc/html/edgeR.html">edgeR</a> to carry out differential gene expression in R, and learn some more useful R commands. This lab is also intended to help you get started on the assignment, which will use related data.</p>
 <p>edgeR is designed to detect differential gene expression in counts from RNA-seq data. We’ll be looking for genes which are differentially expressed between women and men.</p>
 <p>To get started, log into RStudio on your cloud instance (<a href="http://your-ip-address/rstudio">http://your-ip-address/rstudio</a>) or if you prefer, on your own computer. See the Week 8 lab for details.</p>
 <div id="r-scripts" class="section level3">
@@ -126,7 +126,7 @@ filtered &lt;- alldata[!low_counts,]</code></pre>
 <p>What’s going on here? It’s ok if you don’t fully understand this at this point. However, here’s the breakdown:</p>
 <ul>
 <li><code>alldata[,1:10]</code> gets just the female columns</li>
-<li><code>apply()</code> is an R function which takes the dataframe and applies the function we give it (<code>median</code>) to every row. The <code>1</code> tells it to apply the function to every row; <code>0</code> would mean every column. So for every row (gene), it will find the median count. Try running <code>apply(alldata[,1:10],1,median)</code> in your console to see what this returns.</li>
+<li><code>apply()</code> is an R function which takes the dataframe and applies the function we give it (<code>median</code>) to every row. The <code>1</code> tells it to apply the function to every row; <code>2</code> would mean every column. So for every row (gene), it will find the median count. Try running <code>apply(alldata[,1:10],1,median)</code> in your console to see what this returns.</li>
 <li><code>apply(alldata[,1:10],1,median)==0</code> gives a vector of TRUE and FALSE values - TRUE only for genes where the median is zero.</li>
 <li>The <code>&amp;</code> operator is a logical operator, meaning “and”. We’re using it to get a TRUE value only if the female patients’ median count is zero AND the male patients’ median count is zero, for that gene. You can print the vector <code>low_counts</code> to see the result.</li>
 <li>Finally, <code>!</code> is a logical operator meaning “not”. So we index the rows of our original dataframe with <code>alldata[!low_counts,]</code>, which returns only rows where <code>low_counts</code> is FALSE.</li>
@@ -145,7 +145,10 @@ geneinfo &lt;- filtered[21:24]</code></pre>
 </ul>
 <p>Load in the edgeR library:</p>
 <pre class="r"><code>library(edgeR)</code></pre>
+<p><strong>Note:</strong> If you do not have edgeR installed, you can follow the instructions on the <a href="http://www.bioconductor.org/packages/release/bioc/html/edgeR.html">package website to install</a></p>
 <p>Remember you can use <code>help(edgeR)</code>. This will also tell you how to open the edgeR Users Guide - try to do that now. The Quick Start section has a list of most of the commands we’ll need today.</p>
+<p><strong>Note:</strong> If you are using a cloud instance, the edgeRUsersGuide(view=TRUE) command may have trouble opening the file. Instead, you can use set view to FALSE to get the location, and then use that location in the download.file function and then open it via the file panel in RStudio (pop-up windows must be enabled).</p>
+<pre class="r"><code>download.file(paste(&quot;file://&quot;,edgeRUsersGuide(view=FALSE),sep=&quot;&quot;),&quot;edgeRUsersGuide.pdf&quot;)</code></pre>
 <p>To tell edgeR to look for differential expression, we’ll need to specify which columns of the data frame belong to which group. We know that the first 10 columns are female and the next 10 are male, so we’ll make a vector like this:</p>
 <pre class="r"><code>ismale &lt;- c( rep(0,10), rep(1,10) )
 print(ismale)</code></pre>

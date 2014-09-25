@@ -121,7 +121,7 @@ Remember you can use `help(edgeR)`. This will also tell you how to open the edge
 
 **Note:** If you are using a cloud instance, the edgeRUsersGuide(view=TRUE) command may have trouble opening the file. Instead, you can use set view to FALSE to get the location, and then use that location in the download.file function and then open it via the file panel in RStudio (pop-up windows must be enabled).
 
-```
+```{r eval=FALSE}
 download.file(paste("file://",edgeRUsersGuide(view=FALSE),sep=""),"edgeRUsersGuide.pdf")
 ```
 
