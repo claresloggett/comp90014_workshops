@@ -1,0 +1,179 @@
+---
+title: "Week 10 - Gene clustering in R"
+output: html_document
+---
+
+This week we'll look a bit more carefully at heatmaps, which apply hierarchical clustering to visualise gene expression data. 
+
+In order to visualise the data effectively, we'll also look at some more useful built-in R functions for manipulating data frames and matrices.
+
+To get started, log into RStudio on your cloud instance (http://your-ip-address/rstudio) or if you prefer, on your own computer. See the Week 8 lab for details.
+
+### Reminders
+
+You can use `help()` or the `?` operator to get help on any function in R. This also works on many libraries once they are loaded.
+
+To get help on an R operator or R keyword, you can put it in backquotes, e.g. ``help(`+`)`` or ``?`if` ``.
+
+To see a small part of a large variable like a matrix or data frame, try `head()`.
+
+Data frames and matrices can both be indexed with syntax like `X[rows, columns]`. The rows and columns you want can be specified in several ways, including:
+
+- Numerical vectors specifying which rows/columns we want, e.g. `alldata[1:3,1:10]`
+- Logical (TRUE/FALSE) vectors. These will return any rows/columns corresponding to TRUE values in the vector. For instance, `alldata[alldata$chromosome_name == "Y",]` returns rows where the chromosome name is Y.
+- Names of columns or rows. The count for patient M00103_M, gene ENSG00000156639, can be retrieved with `alldata["ENSG00000156639","M00103_M"]`
+
+### Data and libraries
+
+In this lab we will use data that has been made available as an R package in Bioconductor. To install all the packages we'll need, run:
+```{r eval=FALSE}
+source("http://bioconductor.org/biocLite.R")
+biocLite("breastCancerNKI")
+biocLite("Biobase")
+install.packages("gplots")
+```
+
+Once installed, use the `library()` command to load each of these packages into your R session.
+
+### Heatmaps and dendrograms: toy example
+
+Let's illustrate heatmaps with an example that's easy to see. Paste in this code to create a small matrix:
+```{r}
+# Create a 4x3 matrix by specifying 4 rows
+# Values will be filled in column by column
+M = matrix(c(9,3,4,7,5,8,9,4,8,4,2,11), 4)
+
+# Give names to the rows and columns
+rownames(M) = c("Gene1","Gene2","Gene3","Gene4")
+colnames(M) = c("Sample1","Sample2","Sample3")
+M
+```
+
+First, try the `image()` function. This converts values in the matrix to blocks of colour, like a heatmap, but it performs no clustering. Run
+```{r eval=FALSE}
+image(M)
+```
+
+Compare this to the `heatmap()` function:
+```{r eval=FALSE}
+heatmap(M)
+```
+
+Observe the dendrograms for samples and genes, and notice the reordering of rows and columns.
+
+Also note that this is unsupervised learning - although we didn't assign samples to categories or carry out any kind of differential expression analysis, it's pretty clear from the clustering that there are two different patterns of expression.
+
+Check the documentation for this function with `help(heatmap)`. Also have a look at the `hclust()` function, which is called by the `heatmap()` function to perform hierarchical clustering.
+
+You can also try `heatmap.2()`, an enhanced version of the heatmap function, provided by the gplots package.
+
+
+### Load and explore data
+
+Next we'll load some real data, which will require a bit more work to visualise effectively.
+
+The `breastCancerNKI` package contains gene expression data from breast cancer samples. You can use `library(help=breastCancerNKI)` to see some information on the source of the data.
+
+You can see a list of available datasets with the `data()` command. If you've loaded the breastCancerNKI library, you should see the dataset `nki` is available. Load it with `data(nki)`, and you should see it appear as a variable in your environment. In RStudio, this is in the Environment window, and you can also see defined variables using `ls()`.
+
+If you try the structure function `str()`, you'll see that `nki` is quite a complicated object! It's actually an S4 class in R, of type ExpressionSet. We won't cover S4 classes - they are an advanced topic. We'll just use functions from the Biobase library which know how to extract the data we want from ExpressionSet variables.
+
+Here are some Biobase functions to try out on `nki`:
+
+- `exprs(nki)` - get the expression matrix. This is the most important data for this workshop! You'll probably want to assign it to a variable for convenient use.
+- `featureNames(nki)` - get the feature (e.g. gene) names
+- `experimentData(nki)` - display the experiment information
+- `abstract(nki)` - display the abstract for this dataset
+- `pData(nki)` - phenotype information for each sample (for instance, tumour grade)
+
+If you like, you can use `library(help=Biobase)` to see a list of all Biobase functions.
+
+### Find the most variable genes
+
+We can't easily visualise all the genes in a heatmap - it will be hard to see and slow to compute. You may find R freezes if you even try! In the Week 9 lab, we used the top differentially expressed genes, but in this case we haven't carried out a DGE analysis. For the purposes of this lab, we'll assume we don't know which categories our samples should be in, and see if we can visualise patterns of gene expression with unsupervised learning only. 
+
+We'll try to include those genes whose expression values vary the most across all samples (as opposed to DGE, where we looked at genes which vary between categories).
+
+#### Calculate variances
+
+We can find the variance of set of numbers with the `var()` function. Try for yourself to use indexing to get the top row of the expression matrix, i.e. the expression values for a single gene, and apply `var()` to this row. Note that you will probably have to use the `na.rm=TRUE` parameter of `var()` to ignore missing values.
+
+To apply `var()` to *all* rows, we'll use the `apply()` function, which we also used in Week 9. `apply()` works a bit like a for loop: it takes the a matrix (or data frame) and applies the function we give it to every row, or every column. We can use `apply` with `var` to get a vector of gene variances. Using the documentation for `apply()` and `var()`, see if you can do this.
+
+#### Sort matrix to get top genes
+
+We'll try to take the 500 most variable genes. 
+
+One way to do this is to sort the genes by variance, and then just take the first 500 rows. 
+
+Sorting in R is usually done with the `order()` function. This function returns a vector telling you where each item should go in order to be sorted. This looks a bit indirect the first time you see it. Here's an example to illustrate. We'll make a data frame, then try to sort it alphabetically.
+```{r}
+# Make a data frame to illustrate
+numbers = c(1,3,5,7,11,13,15)
+words = c("one","three","five","seven","eleven","thirteen","fifteen")
+oddtable = data.frame(numbers, words)
+oddtable
+
+# Use order to sort alphabetically
+# This tells us where each row *should* be
+order( oddtable$words )
+```
+Try to understand what you got from the `order()` function here!
+
+```{r}
+# Use this ordering as a vector to index the rows.
+# This pull out rows in the order we want, giving a rearranged table
+row.order = order( oddtable$words )
+sorted.oddtable = oddtable[row.order,]
+sorted.oddtable
+```
+
+If we now wanted the top four of our numbers ordered alphabetically, we could just use
+```{r}
+sorted.oddtable[1:4,]
+```
+
+Using the variances you calculated with `apply()` and `var()`, now use `order()` to sort the expression matrix and get the 500 most variable genes.
+
+### Draw the heatmap
+
+Once we've filtered the data, drawing the heatmap is pretty simple. Use the `heatmap()` or `heatmap.2()` function, as you prefer.
+
+If you use `heatmap.2()`, use the parameter `trace="none"` to prevent overly-dense trace lines being drawn over the top of your heatmap.
+
+Some good hints on modifying your heatmap for better visualisation can be found in this post: http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/ . You might want to try the redgreen colour map, e.g. `col=redgreen(75)`.
+
+**Advanced** 
+
+Note the `ColSideColors` parameter used in the above blog post, used to add a banner bar to the heatmap. We can use this to compare the (unsupervised) clustering to known labels. You might want to try this with the tumour grade from the phenotype information (`pData(nki)`), or other phenotype variables.
+
+### Optional: changing the linkage method
+
+`heatmap()` allows us to specify the function used for hierarchical clustering with the `hclustfun` parameter. It uses the `hclust()` function by default. `?hclust` tells us that the default linkage method is "complete" linkage, mentioned in lectures.
+
+If we want to change this linkage method, we'd still like to use `hclust()`, but we want to specify a different parameter to it. Here's a syntax that will do this, for example, for single linkage: 
+```{r eval=FALSE}
+hclust.single <- function(distmatrix) { hclust(distmatrix, method='single') }
+heatmap(expr_matrix, hclustfun=hclust.single)
+```
+
+### Optional: K-means in R
+
+K-means clustering in R is implemented in the `kmeans()` function, in the built-in stats package. 
+
+For instance, using the toy matrix `M` from the start of the lab:
+```{r}
+# Cluster genes into two groups
+kmeans(M, 2)
+
+# Cluster samples into two groups (take the transpose of the matrix)
+kmeans(t(M), 2)
+```
+
+The "Clustering vector" shows which cluster each item has been assigned to.
+
+Since this toy data had a very clear distinction between groups, we get the same groupings from K-means as we did for hierarchical clustering.
+
+### Python
+
+If you're interested in using these same algorithms in Python, K-means and hierarchical clustering implementations can be found in the scikit-learn module (http://scikit-learn.org/), under **sklearn.cluster**.  Straighforward versions of these algorithms are also not too hard to implement!
