@@ -25,7 +25,7 @@ Data frames and matrices can both be indexed with syntax like `X[rows, columns]`
 
 ### Data and libraries
 
-In this lab we will use data that has been made available as an R package in Bioconductor. To install all the packages we'll need, run:
+In this lab we will use data that has been made available as the R package breastCancerNKI in Bioconductor. To install all the packages we'll need, run:
 ```{r eval=FALSE}
 source("http://bioconductor.org/biocLite.R")
 biocLite("breastCancerNKI")
@@ -65,14 +65,14 @@ Also note that this is unsupervised learning - although we didn't assign samples
 
 Check the documentation for this function with `help(heatmap)`. Also have a look at the `hclust()` function, which is called by the `heatmap()` function to perform hierarchical clustering.
 
-You can also try `heatmap.2()`, an enhanced version of the heatmap function, provided by the gplots package.
+You can also try `heatmap.2()`, an enhanced version of the heatmap function, provided by the gplots package. The two functions have different defaults for the distance metric (used to calculate the dissimilarity matrix) and the linkage method, and different default behaviours for normalising the values.
 
 
 ### Load and explore data
 
-Next we'll load some real data, which will require a bit more work to visualise effectively.
+Next we'll load some real data, which will require a bit more work to cluster effectively.
 
-The `breastCancerNKI` package contains gene expression data from breast cancer samples. You can use `library(help=breastCancerNKI)` to see some information on the source of the data.
+The `breastCancerNKI` package contains gene expression data from a breast cancer study. You can use `library(help=breastCancerNKI)` to see some information on the source of the data.
 
 You can see a list of available datasets with the `data()` command. If you've loaded the breastCancerNKI library, you should see the dataset `nki` is available. Load it with `data(nki)`, and you should see it appear as a variable in your environment. In RStudio, this is in the Environment window, and you can also see defined variables using `ls()`.
 
@@ -88,6 +88,8 @@ Here are some Biobase functions to try out on `nki`:
 
 If you like, you can use `library(help=Biobase)` to see a list of all Biobase functions.
 
+Assign the expression matrix to a variable and use `dim()` to see how many genes and samples there are.
+
 ### Find the most variable genes
 
 We can't easily visualise all the genes in a heatmap - it will be hard to see and slow to compute. You may find R freezes if you even try! In the Week 9 lab, we used the top differentially expressed genes, but in this case we haven't carried out a DGE analysis. For the purposes of this lab, we'll assume we don't know which categories our samples should be in, and see if we can visualise patterns of gene expression with unsupervised learning only. 
@@ -98,7 +100,7 @@ We'll try to include those genes whose expression values vary the most across al
 
 We can find the variance of set of numbers with the `var()` function. Try for yourself to use indexing to get the top row of the expression matrix, i.e. the expression values for a single gene, and apply `var()` to this row. Note that you will probably have to use the `na.rm=TRUE` parameter of `var()` to ignore missing values.
 
-To apply `var()` to *all* rows, we'll use the `apply()` function, which we also used in Week 9. `apply()` works a bit like a for loop: it takes the a matrix (or data frame) and applies the function we give it to every row, or every column. We can use `apply` with `var` to get a vector of gene variances. Using the documentation for `apply()` and `var()`, see if you can do this.
+To apply `var()` to *all* rows, we'll use the `apply()` function, which we also used in Week 9. `apply()` works a bit like a `for` loop: it takes a matrix (or data frame) and applies the function we give it to every row, or every column. We can use `apply` with `var` to get a vector of gene variances, one per row of the expression matrix. Using the documentation for `apply()` and `var()`, see if you can do this.
 
 #### Sort matrix to get top genes
 
@@ -133,11 +135,11 @@ If we now wanted the top four of our numbers ordered alphabetically, we could ju
 sorted.oddtable[1:4,]
 ```
 
-Using the variances you calculated with `apply()` and `var()`, now use `order()` to sort the expression matrix and get the 500 most variable genes.
+Using the variances you calculated with `apply()` and `var()`, now use `order()` on the resulting variances to sort the expression matrix and get the 500 most variable genes. Notice that `order()` sorts in ascending order by default, so you'll probably want to tell it to sort in descending order instead.
 
 ### Draw the heatmap
 
-Once we've filtered the data, drawing the heatmap is pretty simple. Use the `heatmap()` or `heatmap.2()` function, as you prefer.
+Once we've filtered the data, drawing the heatmap is pretty simple. Use the `heatmap()` or `heatmap.2()` function, as you prefer. 
 
 If you use `heatmap.2()`, use the parameter `trace="none"` to prevent overly-dense trace lines being drawn over the top of your heatmap.
 
@@ -149,7 +151,7 @@ Note the `ColSideColors` parameter used in the above blog post, used to add a ba
 
 ### Optional: changing the linkage method
 
-`heatmap()` allows us to specify the function used for hierarchical clustering with the `hclustfun` parameter. It uses the `hclust()` function by default. `?hclust` tells us that the default linkage method is "complete" linkage, mentioned in lectures.
+`heatmap()` and `heatmap.2()` allow us to specify the function used for hierarchical clustering with the `hclustfun` parameter. It uses the `hclust()` function by default. `?hclust` tells us that the default linkage method is "complete" linkage, mentioned in lectures.
 
 If we want to change this linkage method, we'd still like to use `hclust()`, but we want to specify a different parameter to it. Here's a syntax that will do this, for example, for single linkage: 
 ```{r eval=FALSE}
@@ -159,11 +161,11 @@ heatmap(expr_matrix, hclustfun=hclust.single)
 
 ### Optional: K-means in R
 
-K-means clustering in R is implemented in the `kmeans()` function, in the built-in stats package. 
+K-means clustering in R is implemented in the `kmeans()` function, in the built-in stats package. Given a matrix, `kmeans()` will cluster the rows, treating each row as a vector (or point) in a space defined by the columns. 
 
 For instance, using the toy matrix `M` from the start of the lab:
 ```{r}
-# Cluster genes into two groups
+# Cluster genes into two groups, K=2
 kmeans(M, 2)
 
 # Cluster samples into two groups (take the transpose of the matrix)

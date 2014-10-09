@@ -72,7 +72,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="data-and-libraries" class="section level3">
 <h3>Data and libraries</h3>
-<p>In this lab we will use data that has been made available as an R package in Bioconductor. To install all the packages we’ll need, run:</p>
+<p>In this lab we will use data that has been made available as the R package breastCancerNKI in Bioconductor. To install all the packages we’ll need, run:</p>
 <pre class="r"><code>source(&quot;http://bioconductor.org/biocLite.R&quot;)
 biocLite(&quot;breastCancerNKI&quot;)
 biocLite(&quot;Biobase&quot;)
@@ -102,12 +102,12 @@ M</code></pre>
 <p>Observe the dendrograms for samples and genes, and notice the reordering of rows and columns.</p>
 <p>Also note that this is unsupervised learning - although we didn’t assign samples to categories or carry out any kind of differential expression analysis, it’s pretty clear from the clustering that there are two different patterns of expression.</p>
 <p>Check the documentation for this function with <code>help(heatmap)</code>. Also have a look at the <code>hclust()</code> function, which is called by the <code>heatmap()</code> function to perform hierarchical clustering.</p>
-<p>You can also try <code>heatmap.2()</code>, an enhanced version of the heatmap function, provided by the gplots package.</p>
+<p>You can also try <code>heatmap.2()</code>, an enhanced version of the heatmap function, provided by the gplots package. The two functions have different defaults for the distance metric (used to calculate the dissimilarity matrix) and the linkage method, and different default behaviours for normalising the values.</p>
 </div>
 <div id="load-and-explore-data" class="section level3">
 <h3>Load and explore data</h3>
-<p>Next we’ll load some real data, which will require a bit more work to visualise effectively.</p>
-<p>The <code>breastCancerNKI</code> package contains gene expression data from breast cancer samples. You can use <code>library(help=breastCancerNKI)</code> to see some information on the source of the data.</p>
+<p>Next we’ll load some real data, which will require a bit more work to cluster effectively.</p>
+<p>The <code>breastCancerNKI</code> package contains gene expression data from a breast cancer study. You can use <code>library(help=breastCancerNKI)</code> to see some information on the source of the data.</p>
 <p>You can see a list of available datasets with the <code>data()</code> command. If you’ve loaded the breastCancerNKI library, you should see the dataset <code>nki</code> is available. Load it with <code>data(nki)</code>, and you should see it appear as a variable in your environment. In RStudio, this is in the Environment window, and you can also see defined variables using <code>ls()</code>.</p>
 <p>If you try the structure function <code>str()</code>, you’ll see that <code>nki</code> is quite a complicated object! It’s actually an S4 class in R, of type ExpressionSet. We won’t cover S4 classes - they are an advanced topic. We’ll just use functions from the Biobase library which know how to extract the data we want from ExpressionSet variables.</p>
 <p>Here are some Biobase functions to try out on <code>nki</code>:</p>
@@ -119,6 +119,7 @@ M</code></pre>
 <li><code>pData(nki)</code> - phenotype information for each sample (for instance, tumour grade)</li>
 </ul>
 <p>If you like, you can use <code>library(help=Biobase)</code> to see a list of all Biobase functions.</p>
+<p>Assign the expression matrix to a variable and use <code>dim()</code> to see how many genes and samples there are.</p>
 </div>
 <div id="find-the-most-variable-genes" class="section level3">
 <h3>Find the most variable genes</h3>
@@ -127,7 +128,7 @@ M</code></pre>
 <div id="calculate-variances" class="section level4">
 <h4>Calculate variances</h4>
 <p>We can find the variance of set of numbers with the <code>var()</code> function. Try for yourself to use indexing to get the top row of the expression matrix, i.e. the expression values for a single gene, and apply <code>var()</code> to this row. Note that you will probably have to use the <code>na.rm=TRUE</code> parameter of <code>var()</code> to ignore missing values.</p>
-<p>To apply <code>var()</code> to <em>all</em> rows, we’ll use the <code>apply()</code> function, which we also used in Week 9. <code>apply()</code> works a bit like a for loop: it takes the a matrix (or data frame) and applies the function we give it to every row, or every column. We can use <code>apply</code> with <code>var</code> to get a vector of gene variances. Using the documentation for <code>apply()</code> and <code>var()</code>, see if you can do this.</p>
+<p>To apply <code>var()</code> to <em>all</em> rows, we’ll use the <code>apply()</code> function, which we also used in Week 9. <code>apply()</code> works a bit like a <code>for</code> loop: it takes a matrix (or data frame) and applies the function we give it to every row, or every column. We can use <code>apply</code> with <code>var</code> to get a vector of gene variances, one per row of the expression matrix. Using the documentation for <code>apply()</code> and <code>var()</code>, see if you can do this.</p>
 </div>
 <div id="sort-matrix-to-get-top-genes" class="section level4">
 <h4>Sort matrix to get top genes</h4>
@@ -172,7 +173,7 @@ sorted.oddtable</code></pre>
 ## 7      15 fifteen
 ## 3       5    five
 ## 1       1     one</code></pre>
-<p>Using the variances you calculated with <code>apply()</code> and <code>var()</code>, now use <code>order()</code> to sort the expression matrix and get the 500 most variable genes.</p>
+<p>Using the variances you calculated with <code>apply()</code> and <code>var()</code>, now use <code>order()</code> on the resulting variances to sort the expression matrix and get the 500 most variable genes. Notice that <code>order()</code> sorts in ascending order by default, so you’ll probably want to tell it to sort in descending order instead.</p>
 </div>
 </div>
 <div id="draw-the-heatmap" class="section level3">
@@ -185,30 +186,30 @@ sorted.oddtable</code></pre>
 </div>
 <div id="optional-changing-the-linkage-method" class="section level3">
 <h3>Optional: changing the linkage method</h3>
-<p><code>heatmap()</code> allows us to specify the function used for hierarchical clustering with the <code>hclustfun</code> parameter. It uses the <code>hclust()</code> function by default. <code>?hclust</code> tells us that the default linkage method is “complete” linkage, mentioned in lectures.</p>
+<p><code>heatmap()</code> and <code>heatmap.2()</code> allow us to specify the function used for hierarchical clustering with the <code>hclustfun</code> parameter. It uses the <code>hclust()</code> function by default. <code>?hclust</code> tells us that the default linkage method is “complete” linkage, mentioned in lectures.</p>
 <p>If we want to change this linkage method, we’d still like to use <code>hclust()</code>, but we want to specify a different parameter to it. Here’s a syntax that will do this, for example, for single linkage:</p>
 <pre class="r"><code>hclust.single &lt;- function(distmatrix) { hclust(distmatrix, method='single') }
 heatmap(expr_matrix, hclustfun=hclust.single)</code></pre>
 </div>
 <div id="optional-k-means-in-r" class="section level3">
 <h3>Optional: K-means in R</h3>
-<p>K-means clustering in R is implemented in the <code>kmeans()</code> function, in the built-in stats package.</p>
+<p>K-means clustering in R is implemented in the <code>kmeans()</code> function, in the built-in stats package. Given a matrix, <code>kmeans()</code> will cluster the rows, treating each row as a vector (or point) in a space defined by the columns.</p>
 <p>For instance, using the toy matrix <code>M</code> from the start of the lab:</p>
-<pre class="r"><code># Cluster genes into two groups
+<pre class="r"><code># Cluster genes into two groups, K=2
 kmeans(M, 2)</code></pre>
 <pre><code>## K-means clustering with 2 clusters of sizes 2, 2
 ## 
 ## Cluster means:
 ##   Sample1 Sample2 Sample3
-## 1     3.5     8.5     3.0
-## 2     8.0     4.5     9.5
+## 1     8.0     4.5     9.5
+## 2     3.5     8.5     3.0
 ## 
 ## Clustering vector:
 ## Gene1 Gene2 Gene3 Gene4 
-##     2     1     1     2 
+##     1     2     2     1 
 ## 
 ## Within cluster sum of squares by cluster:
-## [1] 3 7
+## [1] 7 3
 ##  (between_SS / total_SS =  88.7 %)
 ## 
 ## Available components:
@@ -218,19 +219,19 @@ kmeans(M, 2)</code></pre>
 ## [9] &quot;ifault&quot;</code></pre>
 <pre class="r"><code># Cluster samples into two groups (take the transpose of the matrix)
 kmeans(t(M), 2)</code></pre>
-<pre><code>## K-means clustering with 2 clusters of sizes 1, 2
+<pre><code>## K-means clustering with 2 clusters of sizes 2, 1
 ## 
 ## Cluster means:
 ##   Gene1 Gene2 Gene3 Gene4
-## 1   5.0   8.0     9     4
-## 2   8.5   3.5     3     9
+## 1   8.5   3.5     3     9
+## 2   5.0   8.0     9     4
 ## 
 ## Clustering vector:
 ## Sample1 Sample2 Sample3 
-##       2       1       2 
+##       1       2       1 
 ## 
 ## Within cluster sum of squares by cluster:
-## [1]  0 11
+## [1] 11  0
 ##  (between_SS / total_SS =  85.0 %)
 ## 
 ## Available components:
