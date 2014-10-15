@@ -3,15 +3,17 @@ title: "Week 11 - Classification"
 output: html_document
 ---
 
-This week we will buld a classifier. We start by taking some data and preparing it for our classification algorithm. We will then split the data into training, validation and test the model
+This week we will buld a classifier. We start by taking some data and preparing it for our classification algorithm. We will then split the data into training and test datasets and test the model.
 
 To get started, log into RStudio on your cloud instance (http://your-ip-address/rstudio) or if you prefer, on your own computer. See the Week 8 lab for details.
 
+This time we'll be looking at classification, so will care more about the phenotype information for each sample than we did last week. Biobase's `pData()` function, will be useful.
 
-- See https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Classification for examples on how to use the e1071 package to classify data
-- See http://rocr.bioinf.mpi-sb.mpg.de/ for information on the ROCR package
-- See http://compbio.dfci.harvard.edu/pubs/sbtpaper/ for explanations on phenotypic varables for the breast cancer dataset
+Some references:
 
+- https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Classification for examples on how to use the e1071 package to classify data
+- http://rocr.bioinf.mpi-sb.mpg.de/ for information on the ROCR package
+- http://compbio.dfci.harvard.edu/pubs/sbtpaper/ for explanations on phenotypic varables for the breast cancer dataset
 
 ### Reminders
 
@@ -48,24 +50,127 @@ Once installed, use the `library()` command to load each of these packages into 
 
 From last week's lab, here are a few useful Biobase functions:
 
-- exprs(nki) - get the expression matrix. This is the most important data for this workshop! You’ll probably want to assign it to a variable for convenient use.
-- featureNames(nki) - get the feature (e.g. gene) names
-- experimentData(nki) - display the experiment information
-- abstract(nki) - display the abstract for this dataset
-- pData(nki) - phenotype information for each sample (for instance, tumour grade)
+- `exprs(nki)` - get the expression matrix. 
+- `featureNames(nki)` - get the feature (e.g. gene) names
+- `experimentData(nki)` - display the experiment information
+- `abstract(nki)` - display the abstract for this dataset
+- `pData(nki)` - phenotype information for each sample (for instance, tumour grade)
 
-If you like, you can use library(help=Biobase) to see a list of all Biobase functions.
+This week, you'll need both the expression matrix and the phenotype information. You may want to save both of these to variables.
 
-### Expression matrix
+If you like, you can use `library(help=Biobase)` to see a list of all Biobase functions.
 
-- Start with your expression matrix from last week ordered by variance
-- Limit the samples to those belonging to the dataset “NKI”
-- Remove germline brca carriers (hint: look at the phenotype matrix)
-- Pick the top x genes to put into your classifier (hint: use the heatmap from last week to inform your selection)
-- Create a vector (as.factor) of your class label (in this case whether they had a distant nki metastasis)
+### Naive Bayes: toy data
 
-### Training, Testing, Validation
-Split your data into a training set and test set
+Paste in the following toy data frame:
+```{r}
+outlook = c('Sunny','Sunny','Overcast','Rain','Rain','Rain','Overcast','Sunny','Sunny','Rain','Sunny','Overcast','Overcast','Rain')
+temperature = c('Hot','Hot','Hot','Mild','Hot','Hot','Hot','Mild','Hot','Mild','Mild','Mild','Hot','Mild')
+humidity = c('High','High','High','High','Normal','Normal','Normal','High','Normal','Normal','Normal','High','Normal','High')
+wind = c('Weak','Strong','Weak','Weak','Weak','Strong','Strong','Weak','Weak','Weak','Strong','Strong','Weak','Strong')
+tennis = c('No','No','Yes','Yes','Yes','No','Yes','No','Yes','Yes','Yes','Yes','Yes','No')
+tennis.df = data.frame(outlook, temperature, humidity, wind, tennis)
+tennis.df
+```
+
+We'll build a Naive Bayes classifier using the `naiveBayes()` function from the e1071 package. Have a look at the documentation for this function. Call this function with `tennis.df[,1:4]` as x and `tennis.df[,5]` as y. Assign the resulting model to a variable `classifier`.
+
+Examine `classifier`. You should see a model which gives the *a priori* probabilities P(Yes) and P(No), as well as the conditional probabilities such as P(Hot|No).
+
+You can use this model with R's `predict()` function to predict values, like
+```{r eval=FALSE}
+predict(classifier, tennis.df[,1:4])
+```
+
+Do the predictions match the training labels?
+
+#### Testing
+
+Split the data into training data and test data and assign to `testData` and `trainData`. This toy dataset is very small, so split it in half: seven rows of test data and seven of training. Build a Naive Bayes model using the training data.
+
+Predict the classes of the training data and compare to the original labels. 
+
+Predict the classes of the test data and compare to the real labels.
+
+You can use the `table()` function for this, which is particularly useful when there lots of data:
+```{r eval=FALSE}
+predicted <- predict(classifier, testData[,1:4])
+table(predicted, testData[,5])
+```
+This gives the True-False "confusion matrix" shown in lectures.
+
+Try `predict()` with the parameter `type='raw'` to see the probabilities. Extract the probability of "Yes" - we'll use this as a threshold to draw some (very small) performance curves.
+
+Try the following functions from the ROCR package on the training and test probabilities:
+
+- `prediction()` - pass in the predicted scores (in this case, Yes probabilities) and real labels. Examine the resulting object.
+- `preformance()` - pass in the prediction object you just created, and choose which metrics you'd like to compare (e.g. 'sens', 'fpr'). 
+
+Documentation, including reference manual and some introductory slides, is at http://rocr.bioinf.mpi-sb.mpg.de/ . 
+
+You can plot the performance object to see the resulting curve.
+
+See if you can create an ROC curve and a precision-recall curve.
+
+### Breast cancer dataset
+
+Start with your expression matrix from last week ordered by variance.
+
+#### Remove germline BRCA carriers
+
+The genes BRCA1 and BRCA2 have a strong effect on breast cancer risk. Patients with a germline mutation in the BRCA genes will have different risks, so we'll build our expression-based classifier with patients who don't. 
+
+Work out which sample identifiers do *not* have BRCA mutations, and select out just these samples in your expression matrix.
+
+Hints:
+
+- Find the BRCA mutation info:
+```{r eval=FALSE}
+phenotype <- pData(nki)
+colnames(phenotype)
+```
+- Find the names of samples where the BRCA mutation value is `0`. You may want `rownames()`.
+- Remember you can index your expression matrix with sample names.
+
+#### Pick classifier geneset size
+
+Pick the top X genes to put into your classifier (hint: use the heatmap from last week to inform your selection)
+
+### Naive Bayes
+
+#### Training
+
+We'll build a Naive Bayes classifier using the `naiveBayes()` function from the e1071 package. Have a look at the documentation for this function. 
+
+The input data to our classifier (x) will be the gene expression values, and the label we'd like to be able to predict (y) will be survival free of metastasis. This is the `e.dmfs` column in the phenotype matrix. You may want to use `is.na()` to find samples which have undefined values for this column and remove them from your data. As a hint, try to understand what's going on in the commands:
+```{r eval=FALSE}
+phenotype <- pData(nki)
+!is.na(phenotype[,'e.dmfs'])
+```
+Notice the `!`, which means "not". We've used `[row,column]` notation to be clear, but could also have used shorthand such as `phenotype$e.dmfs`.
+
+Create a vector using `as.factor()` of your class label (in this case whether they had a distant metastasis).
+
+Split your data into a training set and test set. You'll have to decide how many samples to use for each. 
+
+Use your test set to build a model with `naiveBayes()`.
+
+#### Test
+
+Use your model with R's `predict()` function to predict the labels on the training data.
+
+Do the same for the test data.
+
+Plot an ROC curve of each set of predictions above. As in the toy data section, you'll need to use the `type='raw'` parameter to the `predict()` function.
+
+#### Advanced
+
+Try a different geneset, does performance change?
+
+You can split your data into training, validation and test if you'd like to choose the geneset based on validation performance. You can then get real performance metrics for the resulting classifier using the test set.
+
+You can also try other classifiers from the e1071 package.
+
 
 
 
