@@ -39,17 +39,30 @@ install.packages("e1071")
 install.packages("ROCR")
 ```
 
+Some of these may already be installed from last week. `e1071` and `ROCR` are likely to be new.
+
+- `e1071` is a library for classification analysis, which includes a Naive Bayes classifier.
+- `ROCR` is a library for visualising learning performance, with ROC curves, Precision-Recall, etc.
+
 Once installed, use the `library()` command to load each of these packages into your R session. You should also load the `nki` data with the `data()` command.
 
+From last week's lab, here are a few useful Biobase functions:
 
+- exprs(nki) - get the expression matrix. This is the most important data for this workshop! You’ll probably want to assign it to a variable for convenient use.
+- featureNames(nki) - get the feature (e.g. gene) names
+- experimentData(nki) - display the experiment information
+- abstract(nki) - display the abstract for this dataset
+- pData(nki) - phenotype information for each sample (for instance, tumour grade)
+
+If you like, you can use library(help=Biobase) to see a list of all Biobase functions.
 
 ### Expression matrix
+
 - Start with your expression matrix from last week ordered by variance
 - Limit the samples to those belonging to the dataset “NKI”
 - Remove germline brca carriers (hint: look at the phenotype matrix)
 - Pick the top x genes to put into your classifier (hint: use the heatmap from last week to inform your selection)
 - Create a vector (as.factor) of your class label (in this case whether they had a distant nki metastasis)
-
 
 ### Training, Testing, Validation
 Split your data into a training set and test set
