@@ -1,0 +1,58 @@
+---
+title: "Week 11 - Classification"
+output: html_document
+---
+
+This week we will buld a classifier. We start by taking some data and preparing it for our classification algorithm. We will then split the data into training, validation and test the model
+
+To get started, log into RStudio on your cloud instance (http://your-ip-address/rstudio) or if you prefer, on your own computer. See the Week 8 lab for details.
+
+
+- See https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Classification for examples on how to use the e1071 package to classify data
+- See http://rocr.bioinf.mpi-sb.mpg.de/ for information on the ROCR package
+- See http://compbio.dfci.harvard.edu/pubs/sbtpaper/ for explanations on phenotypic varables for the breast cancer dataset
+
+
+### Reminders
+
+You can use `help()` or the `?` operator to get help on any function in R. This also works on many libraries once they are loaded.
+
+To get help on an R operator or R keyword, you can put it in backquotes, e.g. ``help(`+`)`` or ``?`if` ``.
+
+To see a small part of a large variable like a matrix or data frame, try `head()`.
+
+Data frames and matrices can both be indexed with syntax like `X[rows, columns]`. The rows and columns you want can be specified in several ways, including:
+
+- Numerical vectors specifying which rows/columns we want, e.g. `alldata[1:3,1:10]`
+- Logical (TRUE/FALSE) vectors. These will return any rows/columns corresponding to TRUE values in the vector. For instance, `alldata[alldata$chromosome_name == "Y",]` returns rows where the chromosome name is Y.
+- Names of columns or rows. The count for patient M00103_M, gene ENSG00000156639, can be retrieved with `alldata["ENSG00000156639","M00103_M"]`
+
+### Data and libraries
+
+In this lab we will again use data from the R package breastCancerNKI in Bioconductor. To install all the packages we'll need, run:
+```{r eval=FALSE}
+source("http://bioconductor.org/biocLite.R")
+biocLite("breastCancerNKI")
+biocLite("Biobase")
+install.packages("gplots")
+install.packages("e1071")
+install.packages("ROCR")
+```
+
+Once installed, use the `library()` command to load each of these packages into your R session. You should also load the `nki` data with the `data()` command.
+
+
+
+### Expression matrix
+- Start with your expression matrix from last week ordered by variance
+- Limit the samples to those belonging to the dataset “NKI”
+- Remove germline brca carriers (hint: look at the phenotype matrix)
+- Pick the top x genes to put into your classifier (hint: use the heatmap from last week to inform your selection)
+- Create a vector (as.factor) of your class label (in this case whether they had a distant nki metastasis)
+
+
+### Training, Testing, Validation
+Split your data into a training set and test set
+
+
+
