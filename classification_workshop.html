@@ -154,7 +154,7 @@ table(predicted, testData[,5])</code></pre>
 </div>
 <div id="factors-in-r" class="section level3">
 <h3>Factors in R</h3>
-<p>One basic R data type that we haven’t yet covered is the <strong>factor</strong>. Factors are labelled integers. If you have a big data frame full of strings, and many are repeated (such as “Hot” and “Mild”), it’s much more efficient to let R store these as integers. This also lets R compare them easily.</p>
+<p>One basic R data type that we haven’t yet covered is the <strong>factor</strong>. Factors represent categorical data, and are basically labelled integers. If you have a big data frame full of strings, and many are repeated (such as “Hot” and “Mild”), it’s much more efficient to let R store these as integers. This also lets R compare them easily.</p>
 <pre class="r"><code>humidity = c('High','High','High','High','Normal','Normal','Normal','High','Normal','Normal','Normal','High','Normal','High')
 print(humidity)</code></pre>
 <pre><code>##  [1] &quot;High&quot;   &quot;High&quot;   &quot;High&quot;   &quot;High&quot;   &quot;Normal&quot; &quot;Normal&quot; &quot;Normal&quot;

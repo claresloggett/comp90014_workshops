@@ -114,7 +114,7 @@ See if you can create an ROC curve and a precision-recall curve.
 
 ### Factors in R
 
-One basic R data type that we haven't yet covered is the **factor**. Factors are labelled integers. If you have a big data frame full of strings, and many are repeated (such as "Hot" and "Mild"), it's much more efficient to let R store these as integers. This also lets R compare them easily.
+One basic R data type that we haven't yet covered is the **factor**. Factors represent categorical data, and are basically labelled integers. If you have a big data frame full of strings, and many are repeated (such as "Hot" and "Mild"), it's much more efficient to let R store these as integers. This also lets R compare them easily.
 ```{r}
 humidity = c('High','High','High','High','Normal','Normal','Normal','High','Normal','Normal','Normal','High','Normal','High')
 print(humidity)
