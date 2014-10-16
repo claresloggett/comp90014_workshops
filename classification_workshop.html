@@ -152,6 +152,25 @@ table(predicted, testData[,5])</code></pre>
 <p>See if you can create an ROC curve and a precision-recall curve.</p>
 </div>
 </div>
+<div id="factors-in-r" class="section level3">
+<h3>Factors in R</h3>
+<p>One basic R data type that we haven’t yet covered is the <strong>factor</strong>. Factors are labelled integers. If you have a big data frame full of strings, and many are repeated (such as “Hot” and “Mild”), it’s much more efficient to let R store these as integers. This also lets R compare them easily.</p>
+<pre class="r"><code>humidity = c('High','High','High','High','Normal','Normal','Normal','High','Normal','Normal','Normal','High','Normal','High')
+print(humidity)</code></pre>
+<pre><code>##  [1] &quot;High&quot;   &quot;High&quot;   &quot;High&quot;   &quot;High&quot;   &quot;Normal&quot; &quot;Normal&quot; &quot;Normal&quot;
+##  [8] &quot;High&quot;   &quot;Normal&quot; &quot;Normal&quot; &quot;Normal&quot; &quot;High&quot;   &quot;Normal&quot; &quot;High&quot;</code></pre>
+<pre class="r"><code>as.factor(humidity)</code></pre>
+<pre><code>##  [1] High   High   High   High   Normal Normal Normal High   Normal Normal
+## [11] Normal High   Normal High  
+## Levels: High Normal</code></pre>
+<p>Factors can be ordered or unordered. Sometimes the order doesn’t matter, but sometimes there is a natural ordering, like ‘Normal’ and ‘High’. You can force an ordering like this:</p>
+<pre class="r"><code>factor(humidity, levels = c('Normal','High'))</code></pre>
+<pre><code>##  [1] High   High   High   High   Normal Normal Normal High   Normal Normal
+## [11] Normal High   Normal High  
+## Levels: Normal High</code></pre>
+<p>When you read in tabular data from a file, R may automatically convert columns containing strings to factors. This can be something to watch out for if it’s not what you want. You can explicitly control the behaviour of <code>read.table()</code> with the <code>stringsAsFactors</code> parameter.</p>
+<p><code>naiveBayes()</code> will want to treat any class label or non-numeric attribute as a factor, so if you have trouble, check that you are passing it factors rather than strings.</p>
+</div>
 <div id="breast-cancer-dataset" class="section level3">
 <h3>Breast cancer dataset</h3>
 <p>Start with your expression matrix from last week ordered by variance.</p>

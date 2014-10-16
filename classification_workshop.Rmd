@@ -112,6 +112,24 @@ You can plot the performance object to see the resulting curve.
 
 See if you can create an ROC curve and a precision-recall curve.
 
+### Factors in R
+
+One basic R data type that we haven't yet covered is the **factor**. Factors are labelled integers. If you have a big data frame full of strings, and many are repeated (such as "Hot" and "Mild"), it's much more efficient to let R store these as integers. This also lets R compare them easily.
+```{r}
+humidity = c('High','High','High','High','Normal','Normal','Normal','High','Normal','Normal','Normal','High','Normal','High')
+print(humidity)
+as.factor(humidity)
+```
+
+Factors can be ordered or unordered. Sometimes the order doesn't matter, but sometimes there is a natural ordering, like 'Normal' and 'High'. You can force an ordering like this:
+```{r}
+factor(humidity, levels = c('Normal','High'))
+```
+
+When you read in tabular data from a file, R may automatically convert columns containing strings to factors. This can be something to watch out for if it's not what you want. You can explicitly control the behaviour of `read.table()` with the `stringsAsFactors` parameter.
+
+`naiveBayes()` will want to treat any class label or non-numeric attribute as a factor, so if you have trouble, check that you are passing it factors rather than strings.
+
 ### Breast cancer dataset
 
 Start with your expression matrix from last week ordered by variance.
