@@ -185,19 +185,21 @@ colnames(phenotype)</code></pre>
 !is.na(phenotype[,'e.dmfs'])</code></pre>
 <p>Notice the <code>!</code>, which means “not”. We’ve used <code>[row,column]</code> notation to be clear, but could also have used shorthand such as <code>phenotype$e.dmfs</code>.</p>
 <p>Create a vector using <code>as.factor()</code> of your class label (in this case whether they had a distant metastasis).</p>
-<p>Split your data into a training set and test set. You’ll have to decide how many samples to use for each.</p>
-<p>Use your test set to build a model with <code>naiveBayes()</code>.</p>
+<p>The <code>naiveBayes()</code> function expects the attributes, which in our case are genes, to be columns of the matrix, and samples to be rows. So you may need to take the transpose of your expression matrix with <code>t()</code>.</p>
+<p>Watch out for sample ordering - when building the classifier, you need the samples in y to be in the same order as in X!</p>
+<p>Split your data into a training set and test set. This means you’ll need a training X and corresponding labels y, and a test X and y. You’ll have to decide how many samples to use for each set.</p>
+<p>Use your training set to build a model with <code>naiveBayes()</code>.</p>
 </div>
 <div id="test" class="section level4">
 <h4>Test</h4>
-<p>Use your model with R’s <code>predict()</code> function to predict the labels on the training data.</p>
+<p>Use your model with R’s <code>predict()</code> function to predict the relative probability of labels on the training data. As in the toy data section, you’ll need to use the <code>type='raw'</code> parameter to the <code>predict()</code> function.</p>
 <p>Do the same for the test data.</p>
-<p>Plot an ROC curve of each set of predictions above. As in the toy data section, you’ll need to use the <code>type='raw'</code> parameter to the <code>predict()</code> function.</p>
+<p>Plot an ROC curve of each set of predictions above using functions from the ROCR package.</p>
 </div>
 <div id="advanced" class="section level4">
 <h4>Advanced</h4>
 <p>Try a different geneset, does performance change?</p>
-<p>You can split your data into training, validation and test if you’d like to choose the geneset based on validation performance. You can then get real performance metrics for the resulting classifier using the test set.</p>
+<p>You can split your data into training, validation and test if you’d like to choose the geneset based on validation performance. You can then get real performance metrics for the resulting classifier using the test dataset.</p>
 <p>You can also try other classifiers from the e1071 package.</p>
 </div>
 </div>
