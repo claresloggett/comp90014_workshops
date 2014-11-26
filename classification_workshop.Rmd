@@ -104,7 +104,7 @@ Try `predict()` with the parameter `type='raw'` to see the probabilities. Extrac
 Try the following functions from the ROCR package on the training and test probabilities:
 
 - `prediction()` - pass in the predicted scores (in this case, Yes probabilities) and real labels. Examine the resulting object.
-- `preformance()` - pass in the prediction object you just created, and choose which metrics you'd like to compare (e.g. 'sens', 'fpr'). 
+- `performance()` - pass in the prediction object you just created, and choose which metrics you'd like to compare (e.g. 'sens', 'fpr'). 
 
 Documentation, including reference manual and some introductory slides, is at http://rocr.bioinf.mpi-sb.mpg.de/ . 
 
