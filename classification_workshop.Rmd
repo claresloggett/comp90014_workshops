@@ -64,11 +64,11 @@ If you like, you can use `library(help=Biobase)` to see a list of all Biobase fu
 
 Paste in the following toy data frame:
 ```{r}
-outlook = c('Sunny','Sunny','Overcast','Rain','Rain','Rain','Overcast','Sunny','Sunny','Rain','Sunny','Overcast','Overcast','Rain')
-temperature = c('Hot','Hot','Hot','Mild','Hot','Hot','Hot','Mild','Hot','Mild','Mild','Mild','Hot','Mild')
-humidity = c('High','High','High','High','Normal','Normal','Normal','High','Normal','Normal','Normal','High','Normal','High')
-wind = c('Weak','Strong','Weak','Weak','Weak','Strong','Strong','Weak','Weak','Weak','Strong','Strong','Weak','Strong')
-tennis = c('No','No','Yes','Yes','Yes','No','Yes','No','Yes','Yes','Yes','Yes','Yes','No')
+outlook = as.factor(c('Sunny','Sunny','Overcast','Rain','Rain','Rain','Overcast','Sunny','Sunny','Rain','Sunny','Overcast','Overcast','Rain'))
+temperature = as.factor(c('Hot','Hot','Hot','Mild','Hot','Hot','Hot','Mild','Hot','Mild','Mild','Mild','Hot','Mild'))
+humidity = as.factor(c('High','High','High','High','Normal','Normal','Normal','High','Normal','Normal','Normal','High','Normal','High'))
+wind = as.factor(c('Weak','Strong','Weak','Weak','Weak','Strong','Strong','Weak','Weak','Weak','Strong','Strong','Weak','Strong'))
+tennis = as.factor(c('No','No','Yes','Yes','Yes','No','Yes','No','Yes','Yes','Yes','Yes','Yes','No'))
 tennis.df = data.frame(outlook, temperature, humidity, wind, tennis)
 tennis.df
 ```
