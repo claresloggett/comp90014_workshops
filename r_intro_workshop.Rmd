@@ -11,9 +11,15 @@ If you're new to R, the best way to remember how to use it is to not just read -
 
 ###Preparation
 
-We'll use RStudio, which is an interactive development environment for the R programming language. If you have set up a Research Cloud instance and have run the command-line setup scripts as described in the Week 1 lab, you already have RStudio installed on it. Just point a web browser to <http://your-ip-address/rstudio> and log in as researcher.
+We'll use RStudio, which is an interactive development environment for the R programming language. You can use RStudio on the teaching server that you logged in to in Week 1, by navigating to (using the server on which you have an account) one of:
 
-**Important: your Research Cloud instances are virtual machines and are not backed up. If they crash, you could lose everything that was on them. If you do any work on them that you'd like to keep, you should download a backup copy of your work at the end of your session. You can download saved files from RStudio using the Files tab at the lower-right. Select any saved files you want, and use More->Export to download them.**
+* Server 1: http://115.146.85.246/rstudio 
+* Server 2: http://144.6.225.106/rstudio 
+* Server 3: http://130.56.249.93/rstudio 
+
+Your username and password will be the same as for linux (and Jupyter). You can change your password from the linux command line, using the instructions in the Week 1 lab. 
+
+**Important: If you do any work on the teaching servers that you'd like to keep, you should download a backup copy of your work at the end of your session. You can download saved files from RStudio using the Files tab at the lower-right. Select any saved files you want, and use More->Export to download them.**
 
 If want to use your own computer, you can (only if you want to) install R (<http://cran.r-project.org/>) and RStudio (<http://www.rstudio.com/products/rstudio/download/>) instead of using a server.
 
