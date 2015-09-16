@@ -282,23 +282,6 @@ plot(cubed.numbers)</code></pre>
 <p>There are many advanced libraries and techniques for plotting in R, but it’s too big a topic to go through here. We will cover what we need as we need it. Remember that you can see documentation with <code>?plot</code>. There are a few other basic plotting functions, such as <code>hist()</code> (for histograms), and <code>boxplot()</code>.</p>
 <p>If you draw a plot in RStudio, it will appear in the <strong>Plots</strong> tab in the lower-right pane.</p>
 </div>
-<div id="r-for-statistics" class="section level3">
-<h3>R for statistics</h3>
-<p>R has many functions useful for statistics. We don’t have time to cover them in this lab, but here are a few things to try out, to give you an idea of the kinds of thing you can easily do:</p>
-<ul>
-<li><code>mean()</code>, <code>sd()</code> : calculate mean and standard deviation</li>
-<li><code>summary()</code> : get several basic statistics of a data structure at once</li>
-<li><code>help(Distributions)</code> : see documentation on what probability distributions R knows</li>
-<li><code>rnorm()</code> : get some numbers from a normal distribution, for example</li>
-<li><code>t.test()</code> : carry out a t-test on two sets of numbers</li>
-<li><code>help(stats)</code> : get help on the stats package in general</li>
-</ul>
-<p>For instance, try</p>
-<pre class="r"><code>x &lt;- rnorm(100)
-str(x)
-summary(x)
-hist(x)</code></pre>
-</div>
 <div id="regression-models" class="section level3">
 <h3>Regression Models</h3>
 <p>In linear regression, we want to fit a model to data. For instance, if we think our data should fit a model like <span class="math">\[y = a x + b\]</span> then, given data points for <span class="math">\(y\)</span> and <span class="math">\(x\)</span>, we’d like to use regression to find the coefficients <span class="math">\(a\)</span> and <span class="math">\(b\)</span>.</p>
@@ -370,6 +353,36 @@ summary(fit)</code></pre>
 <p>Calling <code>plot()</code> on the fit object will give custom behaviour - try it in your RStudio session.</p>
 <pre class="r"><code>plot(fit)</code></pre>
 </div>
+</div>
+<div id="r-for-statistics" class="section level3">
+<h3>R for statistics</h3>
+<p>R has many functions useful for statistics. We don’t have time to cover them in this lab, but here are a few things to try out, to give you an idea of the kinds of thing you can easily do:</p>
+<ul>
+<li><code>mean()</code>, <code>sd()</code> : calculate mean and standard deviation</li>
+<li><code>summary()</code> : get several basic statistics of a data structure at once</li>
+<li><code>help(Distributions)</code> : see documentation on what probability distributions R knows</li>
+<li><code>rnorm()</code> : get some numbers from a normal distribution, for example</li>
+<li><code>t.test()</code> : carry out a t-test on two sets of numbers</li>
+<li><code>help(stats)</code> : get help on the stats package in general</li>
+</ul>
+<p>For instance, try running the following commands:</p>
+<pre class="r"><code># generate some random &quot;gene expression&quot; values
+expr_cond1 &lt;- rnorm(20, mean = 50, sd = 10)
+# ask what this variable is
+str(expr_cond1)
+# ask for summary. This will give values including the mean and quartiles (the 4-quantiles)
+# notice that rnorm() is random, so the mean won't be exactly what we asked for!
+summary(expr_cond1)
+
+# another set of numbers...
+expr_cond2 = rnorm(20, mean = 60, sd = 10)
+
+# ... and a test for difference of means
+t.test(expr_cond1, expr_cond2)
+
+# some plots (try one at a time)
+hist(expr_cond1)
+boxplot(expr_cond1, expr_cond2)</code></pre>
 </div>
 <div id="other-resources" class="section level3">
 <h3>Other resources</h3>
