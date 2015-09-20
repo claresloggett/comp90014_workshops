@@ -7,7 +7,7 @@ This week we'll use the [Bioconductor](http://www.bioconductor.org/) package [ed
 
 edgeR is designed to detect differential gene expression in counts from RNA-seq data. We'll be looking for genes which are differentially expressed between women and men.
 
-To get started, log into RStudio on your cloud instance (http://your-ip-address/rstudio) or if you prefer, on your own computer. See the Week 8 lab for details.
+To get started, log into RStudio on the COMP90014 servers, or if you prefer, on your own computer. See the [Week 8 lab](r_intro_workshop.html) for details.
 
 
 ### R scripts
@@ -31,7 +31,7 @@ source("week9.R")
 ```
 You should see the output from all the commands in the script - both the print statement and the plot.
 
-If you're on a cloud instance, you have saved your script only to the instance, which is not backed up. You can download a local copy of your script using the **Files** tab in the lower-right window. Select the checkbox next to the file, then select **More -> Export**.
+If you're on a server, you have saved your script only to the server. If you want to keep it, you should make sure to back it up elsewhere. You can download a local copy of your script using the **Files** tab in the lower-right window. Select the checkbox next to the file, then select **More -> Export**.
 
 ### Get the data
 
@@ -41,6 +41,7 @@ To download the data from within R, run
 ```{r eval=FALSE}
 download.file("http://claresloggett.github.io/comp90014_workshops/coriell_10s_data.tsv", "coriell_10s_data.tsv")
 ```
+This will download the file into your home directory.
 
 R has an extremely useful set of functions for reading tabular data into a data frame variable. The core one is `read.table()`. We'll give it the filename and tell it that the columns in the file are tab-separated ("\\t" stands for the tab character), and that the top row is the header with the column names.
 ```{r}
@@ -67,7 +68,8 @@ We can see that the first 10 columns are female patients, the next 10 are male, 
 alldata[1:3,1:10]
 ```
 
-**Check your understanding**: display the first few rows for just the male patient columns.
+<span style="color:blue">**Check your understanding**:</span> display the first few rows for just the male patient columns.
+
 
 #### Reminder: indexing data frames
 
@@ -115,11 +117,11 @@ Load in the edgeR library:
 library(edgeR)
 ```
 
-**Note:** If you do not have edgeR installed, you can follow the instructions on the [package website to install](http://www.bioconductor.org/packages/release/bioc/html/edgeR.html)
+**Note:** If you do not have edgeR installed, you can follow the instructions on the [package website to install](http://www.bioconductor.org/packages/release/bioc/html/edgeR.html). edgeR should already be installed on the teaching servers.
 
 Remember you can use `help(edgeR)`. This will also tell you how to open the edgeR Users Guide - try to do that now. The Quick Start section has a list of most of the commands we'll need today.
 
-**Note:** If you are using a cloud instance, the edgeRUsersGuide(view=TRUE) command may have trouble opening the file. Instead, you can use set view to FALSE to get the location, and then use that location in the download.file function and then open it via the file panel in RStudio (pop-up windows must be enabled).
+**Note:** If you are using a server rather than your own computer, the edgeRUsersGuide(view=TRUE) command may have trouble opening the file. Instead, you can use set view to FALSE to get the location, and then use that location in the download.file function and then open it via the file panel in RStudio (pop-up windows must be enabled).
 
 ```{r eval=FALSE}
 download.file(paste("file://",edgeRUsersGuide(view=FALSE),sep=""),"edgeRUsersGuide.pdf")
@@ -148,17 +150,18 @@ Next, use edgeR's normalisation function, `calcNormFactors()` to scale each samp
 ```{r}
 dge <- calcNormFactors(dge)
 ```
+This won't actually change the counts table, but it will generate normalisation values which will be used by other edgeR functions. You can see these by examining `dge$samples`.
 
-Now that we have normalised expression counts, let's try visualising them with an MDS plot. MDS stands for "multi-dimensional scaling" and will be covered in later lectures. The `MDSplot()` function will treat the differences between counts as the "distance" between samples, and will try to show us approximately this distance on a two-dimensional plot.
+Now that we have normalised expression counts, let's try visualising them with an MDS plot. MDS stands for "multi-dimensional scaling" and will be covered in later lectures. The `MDSplot()` function will treat the differences between gene expression values as the "distance" between samples, and will try to show us approximately this distance on a two-dimensional plot.
 ```{r eval=FALSE}
 plotMDS(dge)
 ```
 
-Notice that the male and female samples do seem to be separated. This is encouraging. If you'd like, you can use the `col` parameter of `plotMDS()` to highlight which samples are in which group, by passing in a vector of colours in the same order as the samples. For instance, a vector of ten red and ten blue could be specified with `col=c( rep("red",10), rep("blue",10) )`.
+Notice that the male and female samples do seem to be separated. This is encouraging. It means that there is more difference in gene expression between groups than within groups. If you'd like, you can use the `col` parameter of `plotMDS()` to highlight which samples are in which group, by passing in a vector of colours in the same order as the samples. For instance, a vector of ten red and ten blue could be specified with `col=c( rep("red",10), rep("blue",10) )`.
 
 Now let's do our DGE analysis. Carry out edgeR's model-fitting steps on our data:
 
-- use `estimateCommonDisp()` to fit the data to get an estimate of the dispersion parameter (the variance) in the negative binomial distribution used to model randomness in RNA-seq counts.  
+- use `estimateCommonDisp()` to fit the data to get an estimate of the dispersion parameter (the variance). This is edgeR's estimate of overall dispersion in the negative binomial distribution used to model randomness in RNA-seq counts.  
 - use `estimateTagwiseDisp()` to get *per-gene* estimates of the variance. Some genes may be naturally more variable than others. Because there are many more genes than there are samples, we risk overfitting these estimates to our particular data. edgeR uses the common dispersion from the previous step to create a Bayesian prior, so that the variances of different genes become related to one another and "smoothed out".
 
 To apply these steps, just call each function on the DGEList object and store the new value, just as we did for `calcNormFactors()`.
@@ -169,7 +172,7 @@ dge <- estimateCommonDisp(dge)
 dge <- estimateTagwiseDisp(dge)
 ```
 
-Finally, we are ready to look for differential expression. edgeR will do this by looking for statistically significant differences between the means of the negative binomial distributions we just fitted to the data. Use edgeR's `exactTest()` function:
+Finally, we are ready to look for differential expression. edgeR will do this by looking for statistically significant differences between the means of the negative binomial distributions. Use edgeR's `exactTest()` function:
 ```{r}
 results <- exactTest(dge)
 ```
@@ -182,7 +185,7 @@ topTags(results, n=20)
 ```
 to see the top 20 genes, sorted by P-value. You can sort by log fold change rather than P-value if you like - check the documentation on the `topTags` function.
 
-**Think:** earlier, we stored a table of information about each gene in the `geneinfo` data frame. How can you look up the information on the top differentially-expressed genes? As a hint, you can get the *names* of these genes with a command like `rownames(topTags(results, n=20))`. If you aren't sure how to do this, ask a demonstrator.
+<span style="color:blue">**Stop and think:**</span> earlier, we stored a table of information about each gene in the `geneinfo` data frame. How can you look up the information on the top differentially-expressed genes? As a hint, you can get the *identifiers* of these genes with a command like `rownames(topTags(results, n=20))`. These identifiers should also be the row names of the `geneinfo` data frame. If you aren't sure how to solve this, ask a demonstrator.
 
 We should expect to see a lot of genes from the Y chromosome in this top list. What genes do you see that are *not* from the Y chromosome? What do they do?
 
@@ -190,22 +193,22 @@ We should expect to see a lot of genes from the Y chromosome in this top list. W
 
 **Note:** You can download any images you produce from the **Plots** tab, using **Export -> Save as Image**.
 
-A very common way to visualise expression data is as a *heatmap*. A heatmap is a two-dimensional grid showing colours which correspond to the expression values. R's `heatmap()` function will perform clustering of similar samples and genes, and will draw this grid, which should make it clear that there are sets of genes which have higher or lower expression in one group or the other.
+A very common way to visualise expression data is as a *heatmap*. A heatmap is a two-dimensional grid showing colours which correspond to the expression values. R's `heatmap()` function will perform clustering of similar samples and genes, and will draw this grid, which should make it clear that there are sets of genes which have higher or lower expression in one group or the other. We will talk about heatmaps in more detail in the lecture on clustering.
 
 We don't want to include every gene in our heatmap, as it would be too hard to see (and slow to calculate). So we'll use the top differentially expressed genes. You can adjust `n=20` below to choose the number of genes to include.
 
 The edgeR User Guide recommends using the log of the normalised expression counts as the values in the heatmap. 
 ```{r eval=FALSE}
 topgenes <- rownames(topTags(results, n=20))
-log.dge <- cpm(dge, prior.count=2, log=TRUE)
-topgene.log.expression <- log.dge[topgenes,]
-heatmap(topgene.log.expression)
+log_dge <- cpm(dge, prior.count=2, log=TRUE)
+topgenes_log_expression <- log_dge[topgenes,]
+heatmap(topgenes_log_expression)
 ```
 
-The default colour scheme can make it hard to see what's going on sometimes. You can adjust it to anything you like. For instance, for red-to-green:
+The default colour scheme can make it hard to see what's going on sometimes. You can adjust it to anything you like. For instance, for red-to-green, with yellow in the middle at zero log fold change:
 ```{r eval=FALSE}
 redtogreen <- colorRampPalette(c("red", "yellow", "green"))(n=299)
-heatmap(topgene.log.expression, col=redtogreen)
+heatmap(topgenes_log_expression, col=redtogreen)
 ```
 
 Another useful plot to draw can be the distribution of P-values. You can draw this with
@@ -228,7 +231,31 @@ randomgroup
 
 If you carry our your DGE analysis but give edgeR `randomgroup` in place of `ismale`, what do you expect to see?
 
-**Extra: Degust** 
+### Extra: Visualise corrected P-values
+
+This section is optional, if you have time.
+
+Earlier, we drew a histogram of P-values. These were the P-values from `results$table$PValue`, which are uncorrected P-values generated by `exactTest()`. What if we want to see the adjusted P-values?
+
+The `topTags()` function generates corrected P-values by calling the `p.adjust()` function. You can try `help(topTags)` and `help(p.adjust)` to see the options, including available methods of multiple hypothesis correction. The default for `topTags()` is "BH" (Benjamini-Hochberg), discussed in lectures.
+
+There are a couple of different ways we could get the full list of adjusted P-values: we could call `topTags()` with the parameter `n` equal to the number of genes, so that it returns all rows. Or we could just call `p.adjust()` ourselves, like so:
+```{r}
+q_values = p.adjust(results$table$PValue, method="BH")
+```
+
+Now we can plot a histogram of corrected P-values:
+```{r eval=FALSE}
+hist(q_values, breaks=150)
+```
+
+Since there are far fewer corrected P-values below 0.05 than there were uncorrected P-values, you may not see anything useful using the default plotting parameters. You may want to set the `breaks` paramter to a higher number, and/or experiment with the `xlim` or `ylim` arguments to `hist()`. These arguments expect a vector with the beginning and end of the desired axis range. For instance, 
+```{r eval=FALSE}
+hist(q_values, breaks=150, ylim=c(0,500))
+```
+will set the y-axis range to 0-500. 
+
+### Extra: Degust
 
 Degust is a useful tool mentioned in the lab. It uses the R library limma (by the same group as edgeR) to generate interactive differential expression plots. If you want to play with it, it is at http://www.vicbioinformatics.com/software.degust.shtml and we've temporarily loaded in today's data [here](http://www.vicbioinformatics.com/degust/compare.html?code=fadd6cc8160b74410a013a7347a2870e).
 
