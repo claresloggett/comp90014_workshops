@@ -231,6 +231,8 @@ randomgroup
 
 If you carry our your DGE analysis but give edgeR `randomgroup` in place of `ismale`, what do you expect to see?
 
+Try it out!
+
 ### Extra: Visualise corrected P-values
 
 This section is optional, if you have time.
@@ -254,6 +256,60 @@ Since there are far fewer corrected P-values below 0.05 than there were uncorrec
 hist(q_values, breaks=150, ylim=c(0,500))
 ```
 will set the y-axis range to 0-500. 
+
+### Extra: DGE by hand
+
+This section is optional, if you have time and are interested. It is more complicated and requires some R syntax that we haven't used before.
+
+In lectures, we discussed the concept of applying a statistical test to every gene. edgeR does this for us using negative binomial distributions, and carries out extra steps to improve the estimate of each gene's variance. 
+
+It can be illustrative to run the statistical tests ourselves instead of calling a library function. Here's an example using t-tests. T-tests won't give us very good result as we only have 10 replicates per condition, but our top few genes will still be sensible.
+
+A t-test in R is called with the `t.test()` function from the stats package. To compare two groups of gene expression values, we use a syntax like `t.test(group1, group2)`. In our data we have 10 samples in each group, so to carry out a t-test on the first gene (row) in the array:
+```{r}
+t.test(expression[1, 1:10], expression[1, 11:20])
+```
+
+This returns several values: t-statistic, p-value, confidence intervals etc. The function actually returns a list containing these values:
+```{r}
+gene1_result <- t.test(expression[, 1:10], expression[, 11:20])
+str(gene1_result)
+```
+
+So we can get just the P-value like this:
+```{r}
+gene1_result$p.value
+```
+
+We're going to want to get a P-value for every gene, i.e. every row in the expression array. This will be easiest if we first write a function which takes in a row and returns a P-value. Here's what such a function could look like in R:
+```{r}
+# expression_row should be a vector (e.g. one row of the array)
+get_pvalue <- function(expression_row){
+  result <- t.test(expression_row[1:10], expression_row[11:20])
+  return(result$p.value)
+}
+```
+Notice that we've hard-coded the number of replicates (10) with our `1:10` and `11:20`. This isn't great but will do for now.
+
+To apply a function to every row of an array, we can use R's `apply()` function. This will give us back a vector (one value per row). 
+```{r}
+p_values <- apply(expression, 1, get_pvalue)
+head(p_values)
+```
+We've given `apply()`:
+
+* the matrix of values
+* a number which specifies whether we want to apply to rows or columns (1 means rows, 2 means columns)
+* the name of the function to apply to each row
+
+Visualising the resulting P-values:
+```{r}
+hist(p_values, breaks=150)
+```
+
+This looks terrible! There is no visible significance spike and the rest of the distribution is far from uniform. In fact what is happening is that since we've just assumed a normal distribution and haven't done any adjustment of variance, our results are very noisy. There are only a few true positives and they are hard to see among all the false positives. More replicates would improve the situation.
+
+You will find however, that since the absence of a Y-chromosome is quite an extreme gene expression difference, that the genes corresponding to the lowest P-values are still likely to be sensible ones. You could also try zooming in on your histogram with the `breaks`, `xlim` and `ylim` parameters, and try doing multiple hypothesis correction with the `p.adjust()` function.
 
 ### Extra: Degust
 
