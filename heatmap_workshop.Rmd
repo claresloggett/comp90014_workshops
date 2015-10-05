@@ -35,6 +35,9 @@ install.packages("gplots")
 
 Once installed, use the `library()` command to load each of these packages into your R session.
 
+The `heatmap()` function we will use is already available as part of the `stats` package, but `gplots` gives us access to the more flexible `heatmap.2()` function.
+
+
 ### Heatmaps and dendrograms: toy example
 
 Let's illustrate heatmaps with an example that's easy to see. Paste in this code to create a small matrix:
@@ -59,13 +62,38 @@ Compare this to the `heatmap()` function:
 heatmap(M)
 ```
 
-Observe the dendrograms for samples and genes, and notice the reordering of rows and columns.
+If necessary, you can widen the image margins around the heatmap with the `margins` parameter. This parameter expects a 2-element vector with the desired x and y margin sizes, e.g.
+```{r eval=FALSE}
+heatmap(M, margins=c(10,8))
+```
+
+Observe the dendrograms for samples and genes, and notice the reordering of rows and columns. 
+
+Notice that the row and column names of the matrix are used in the plot (reordered by clustering). You can use `rownames()` and `colnames()` on your data to alter the names displayed for your data.
 
 Also note that this is unsupervised learning - although we didn't assign samples to categories or carry out any kind of differential expression analysis, it's pretty clear from the clustering that there are two different patterns of expression.
 
-Check the documentation for this function with `help(heatmap)`. Also have a look at the `hclust()` function, which is called by the `heatmap()` function to perform hierarchical clustering.
+Check the documentation for this function with `help(heatmap)`. Some interesting paramters to note are:
 
-You can also try `heatmap.2()`, an enhanced version of the heatmap function, provided by the gplots package. The two functions have different defaults for the distance metric (used to calculate the dissimilarity matrix) and the linkage method, and different default behaviours for normalising the values.
+* `hclustfun`, which selects which function to use for clustering. It defaults to `hclust()`. This function can apply a chosen linkage method for hierarchical clustering - check `help(hclust)`; what is the default linkage method?
+* `distfun`, which selects which function to use to calculate distances between samples. It defaults to `dist()` - use `help(dist)` to see the available distance metrics.
+
+For instance, if we apply the default (Euclidean) distance function to our expression array M:
+```{r}
+dist(M)
+```
+This tells us how similar (or distanct) genes are. If we want to know how similar samples are, we can take the transpose of the matrix:
+```{r}
+dist(t(M))
+```
+
+You can directly visualise the clustering results with `plot()`, which allows you to quickly try out different distance metrics and linkage methods. For example:
+```{r}
+manhattan_distances = dist(t(M), method="manhattan")
+plot(hclust(manhattan_distances, method="single"))
+```
+
+You can also try `heatmap.2()`, an enhanced version of the heatmap function, provided by the gplots package. The two functions have different defaults for the distance metric and the linkage method, and different default behaviours for normalising the values.
 
 
 ### Load and explore data
@@ -74,7 +102,7 @@ Next we'll load some real data, which will require a bit more work to cluster ef
 
 The `breastCancerNKI` package contains gene expression data from a breast cancer study. You can use `library(help=breastCancerNKI)` to see some information on the source of the data.
 
-You can see a list of available datasets with the `data()` command. If you've loaded the breastCancerNKI library, you should see the dataset `nki` is available. Load it with `data(nki)`, and you should see it appear as a variable in your environment. In RStudio, this is in the Environment window, and you can also see defined variables using `ls()`.
+You can see a list of available datasets with the `data()` command. If you've loaded the breastCancerNKI library, you should see the dataset `nki` available. Load it with `data(nki)`, and you should see it appear as a variable in your environment. In RStudio, this is in the Environment window, and you can also see defined variables using `ls()`.
 
 If you try the structure function `str()`, you'll see that `nki` is quite a complicated object! It's actually an S4 class in R, of type ExpressionSet. We won't cover S4 classes - they are an advanced topic. We'll just use functions from the Biobase library which know how to extract the data we want from ExpressionSet variables.
 
@@ -92,9 +120,9 @@ Assign the expression matrix to a variable and use `dim()` to see how many genes
 
 ### Find the most variable genes
 
-We can't easily visualise all the genes in a heatmap - it will be hard to see and slow to compute. You may find R freezes if you even try! In the Week 9 lab, we used the top differentially expressed genes, but in this case we haven't carried out a DGE analysis. For the purposes of this lab, we'll assume we don't know which categories our samples should be in, and see if we can visualise patterns of gene expression with unsupervised learning only. 
+You should have found that there are more than 20,000 genes in the array. We can't easily visualise all the genes in a heatmap - it will be hard to see and slow to compute.  You may find R freezes if you even try! In the Week 9 lab, we used the top differentially expressed genes, but in this case we haven't carried out a DGE analysis. For the purposes of this lab, we'll assume we don't know which categories our samples should be in, and see if we can visualise patterns of gene expression with unsupervised learning only. 
 
-We'll try to include those genes whose expression values vary the most across all samples (as opposed to DGE, where we looked at genes which vary between categories).
+We'll try to include those genes whose expression values vary the most across all samples (this is not as sophisticated as doing DGE, which gives us genes which vary between categories).
 
 #### Calculate variances
 
@@ -125,14 +153,14 @@ Try to understand what you got from the `order()` function here!
 ```{r}
 # Use this ordering as a vector to index the rows.
 # This pull out rows in the order we want, giving a rearranged table
-row.order = order( oddtable$words )
-sorted.oddtable = oddtable[row.order,]
-sorted.oddtable
+row_order = order( oddtable$words )
+sorted_oddtable = oddtable[row_order,]
+sorted_oddtable
 ```
 
 If we now wanted the top four of our numbers ordered alphabetically, we could just use
 ```{r}
-sorted.oddtable[1:4,]
+sorted_oddtable[1:4,]
 ```
 
 Using the variances you calculated with `apply()` and `var()`, now use `order()` on the resulting variances to sort the expression matrix and get the 500 most variable genes. Notice that `order()` sorts in ascending order by default, so you'll probably want to tell it to sort in descending order instead.
@@ -144,6 +172,8 @@ Once we've filtered the data, drawing the heatmap is pretty simple. Use the `hea
 If you use `heatmap.2()`, use the parameter `trace="none"` to prevent overly-dense trace lines being drawn over the top of your heatmap.
 
 Some good hints on modifying your heatmap for better visualisation can be found in this post: http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/ . You might want to try the redgreen colour map, e.g. `col=redgreen(75)`.
+
+You may want to use gene names instead of gene identifiers in your heatmap.
 
 **Advanced** 
 
