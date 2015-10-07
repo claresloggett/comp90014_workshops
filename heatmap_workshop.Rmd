@@ -80,7 +80,7 @@ For instance, if we apply the default (Euclidean) distance function to our expre
 ```{r}
 dist(M)
 ```
-This tells us how similar (or distanct) genes are. If we want to know how similar samples are, we can take the transpose of the matrix:
+This tells us how similar (or distant) genes are. If we want to know how similar samples are, we can take the transpose of the matrix:
 ```{r}
 dist(t(M))
 ```
