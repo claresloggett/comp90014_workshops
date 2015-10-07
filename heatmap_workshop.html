@@ -66,7 +66,6 @@ img {
 
 <p>This week we’ll look a bit more carefully at heatmaps, which apply hierarchical clustering to visualise gene expression data.</p>
 <p>In order to visualise the data effectively, we’ll also look at some more useful built-in R functions for manipulating data frames and matrices.</p>
-<p>To get started, log into RStudio on your cloud instance (<a href="http://your-ip-address/rstudio">http://your-ip-address/rstudio</a>) or if you prefer, on your own computer. See the Week 8 lab for details.</p>
 <div id="reminders" class="section level3">
 <h3>Reminders</h3>
 <p>You can use <code>help()</code> or the <code>?</code> operator to get help on any function in R. This also works on many libraries once they are loaded.</p>
@@ -139,7 +138,7 @@ plot(hclust(manhattan_distances, method=&quot;single&quot;))</code></pre>
 <div id="load-and-explore-data" class="section level3">
 <h3>Load and explore data</h3>
 <p>Next we’ll load some real data, which will require a bit more work to cluster effectively.</p>
-<p>The <code>breastCancerNKI</code> package contains gene expression data from a breast cancer study. You can use <code>library(help=breastCancerNKI)</code> to see some information on the source of the data.</p>
+<p>The <code>breastCancerNKI</code> package contains gene expression data from a breast cancer study. You can use <code>library(help=breastCancerNKI)</code> to see some information on the source of the data. If you are interested, the original paper on this data by van’t Veer et al. is <a href="http://www.nature.com/nature/journal/v415/n6871/full/415530a.html">here</a>.</p>
 <p>You can see a list of available datasets with the <code>data()</code> command. If you’ve loaded the breastCancerNKI library, you should see the dataset <code>nki</code> available. Load it with <code>data(nki)</code>, and you should see it appear as a variable in your environment. In RStudio, this is in the Environment window, and you can also see defined variables using <code>ls()</code>.</p>
 <p>If you try the structure function <code>str()</code>, you’ll see that <code>nki</code> is quite a complicated object! It’s actually an S4 class in R, of type ExpressionSet. We won’t cover S4 classes - they are an advanced topic. We’ll just use functions from the Biobase library which know how to extract the data we want from ExpressionSet variables.</p>
 <p>Here are some Biobase functions to try out on <code>nki</code>:</p>
@@ -151,21 +150,34 @@ plot(hclust(manhattan_distances, method=&quot;single&quot;))</code></pre>
 <li><code>pData(nki)</code> - phenotype information for each sample (for instance, tumour grade)</li>
 </ul>
 <p>If you like, you can use <code>library(help=Biobase)</code> to see a list of all Biobase functions.</p>
-<p>Assign the expression matrix to a variable and use <code>dim()</code> to see how many genes and samples there are.</p>
+<p><strong>Exercise:</strong> Assign the expression matrix to a variable and use <code>dim()</code> to see how many genes and samples there are.</p>
 </div>
 <div id="find-the-most-variable-genes" class="section level3">
 <h3>Find the most variable genes</h3>
 <p>You should have found that there are more than 20,000 genes in the array. We can’t easily visualise all the genes in a heatmap - it will be hard to see and slow to compute. You may find R freezes if you even try! In the Week 9 lab, we used the top differentially expressed genes, but in this case we haven’t carried out a DGE analysis. For the purposes of this lab, we’ll assume we don’t know which categories our samples should be in, and see if we can visualise patterns of gene expression with unsupervised learning only.</p>
 <p>We’ll try to include those genes whose expression values vary the most across all samples (this is not as sophisticated as doing DGE, which gives us genes which vary between categories).</p>
+<div id="filtering-and-missing-data" class="section level4">
+<h4>Filtering and missing data</h4>
+<p><strong>Stop and think:</strong> Would it make sense to filter our genes? Last week we filtered probes which had low expression values in <em>both</em> groups (men and women), since these were not likely to be useful. Here, we are doing clustering, so we don’t know in advance which groups to check, or even how many groups there will be.</p>
+<p>The other thing we might want to filter on is missing data. Some values in our expression array are unknown; these have the special R value <code>NA</code>. Given an array <code>all_expr</code>, we can find missing values with</p>
+<pre class="r"><code>is.na(all_expr)</code></pre>
+<p>Try this on your own expression array variable.</p>
+<p>We can count how many <code>TRUE</code> values there are (and hence how many <code>NA</code>s there were) with <code>sum()</code>, which will treat <code>TRUE</code> as <code>1</code> and <code>FALSE</code> as <code>0</code>:</p>
+<pre class="r"><code>sum(is.na(all_expr))</code></pre>
+<pre><code>## [1] 54262</code></pre>
+<p>This isn’t too many compared to the size of the data. The <code>heatmap()</code> function can cope with missing data, so in the interests of time we will <em>not</em> do any filtering. But, bear in mind that filtering out probes with large numbers of missing values might be a good idea, as their apparent variance could be misleading.</p>
+</div>
 <div id="calculate-variances" class="section level4">
 <h4>Calculate variances</h4>
 <p>We can find the variance of set of numbers with the <code>var()</code> function. Try for yourself to use indexing to get the top row of the expression matrix, i.e. the expression values for a single gene, and apply <code>var()</code> to this row. Note that you will probably have to use the <code>na.rm=TRUE</code> parameter of <code>var()</code> to ignore missing values.</p>
-<p>To apply <code>var()</code> to <em>all</em> rows, we’ll use the <code>apply()</code> function, which we also used in Week 9. <code>apply()</code> works a bit like a <code>for</code> loop: it takes a matrix (or data frame) and applies the function we give it to every row, or every column. We can use <code>apply</code> with <code>var</code> to get a vector of gene variances, one per row of the expression matrix. Using the documentation for <code>apply()</code> and <code>var()</code>, see if you can do this.</p>
+<p>To apply <code>var()</code> to <em>all</em> rows, we’ll use the <code>apply()</code> function, which we also used in Week 9. <code>apply()</code> works a bit like a <code>for</code> loop: it takes a matrix (or data frame) and applies the function we give it to every row, or every column. If you have saved your expression matrix to a variable called, for example, <code>all_expr</code>, then you can use <code>apply</code> with <code>var</code> to get a vector of gene variances, one per row of the expression matrix, like so:</p>
+<pre class="r"><code>variances = apply(all_expr, 1, var, na.rm=TRUE)</code></pre>
+<p>The extra argument here, <code>na.rm=TRUE</code>, just gets passed in to <code>var()</code>, so that <code>var()</code> will ignore missing values.</p>
 </div>
 <div id="sort-matrix-to-get-top-genes" class="section level4">
 <h4>Sort matrix to get top genes</h4>
-<p>We’ll try to take the 500 most variable genes.</p>
-<p>One way to do this is to sort the genes by variance, and then just take the first 500 rows.</p>
+<p>We’ll try to take the 50 most variable genes.</p>
+<p>One way to do this is to sort the genes by variance, and then just take the first 50 rows.</p>
 <p>Sorting in R is usually done with the <code>order()</code> function. This function returns a vector telling you where each item should go in order to be sorted. This looks a bit indirect the first time you see it. Here’s an example to illustrate. We’ll make a data frame, then try to sort it alphabetically.</p>
 <pre class="r"><code># Make a data frame to illustrate
 numbers = c(1,3,5,7,11,13,15)
@@ -205,15 +217,19 @@ sorted_oddtable</code></pre>
 ## 7      15 fifteen
 ## 3       5    five
 ## 1       1     one</code></pre>
-<p>Using the variances you calculated with <code>apply()</code> and <code>var()</code>, now use <code>order()</code> on the resulting variances to sort the expression matrix and get the 500 most variable genes. Notice that <code>order()</code> sorts in ascending order by default, so you’ll probably want to tell it to sort in descending order instead.</p>
+<p><strong>Exercise:</strong> Using the variances you calculated with <code>apply()</code> and <code>var()</code>, now use <code>order()</code> on the resulting variances to sort the expression matrix and get the 50 most variable genes. Notice that <code>order()</code> sorts in ascending order by default, so you’ll probably want to tell it to sort in descending order instead.</p>
 </div>
 </div>
 <div id="draw-the-heatmap" class="section level3">
 <h3>Draw the heatmap</h3>
-<p>Once we’ve filtered the data, drawing the heatmap is pretty simple. Use the <code>heatmap()</code> or <code>heatmap.2()</code> function, as you prefer.</p>
+<p>Once we’ve filtered the data, drawing the heatmap is pretty simple. Use the <code>heatmap()</code> or <code>heatmap.2()</code> function, as you prefer. Make sure to use your top 50 genes only, try not to accidentally run <code>heatmap()</code> on your entire expression matrix - this may freeze R!</p>
 <p>If you use <code>heatmap.2()</code>, use the parameter <code>trace=&quot;none&quot;</code> to prevent overly-dense trace lines being drawn over the top of your heatmap.</p>
-<p>Some good hints on modifying your heatmap for better visualisation can be found in this post: <a href="http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/">http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/</a> . You might want to try the redgreen colour map, e.g. <code>col=redgreen(75)</code>.</p>
-<p>You may want to use gene names instead of gene identifiers in your heatmap.</p>
+<p>You will probably find that the default red-yellow colour scheme is not very clear. Remember you can change the colours used with the <code>col</code> parameter in the <code>heatmap()</code> function (e.g. <code>heatmap(M, col=bluered(75)</code>). There are a couple of functions to create different colour schemes in R (some of which are equivalent). Last week we used the <code>colorRampPalette()</code> function. Other convenient options include:</p>
+<ul>
+<li><code>colorpanel()</code>: e.g. <code>colorpanel(75, &quot;blue&quot;, &quot;lightyellow&quot;, &quot;red&quot;)</code> will give a palette of 75 colours from blue through light yellow to red, with light yellow representing zero.</li>
+<li>convenience aliases which just take a number - e.g. try <code>redgreen(75)</code>, <code>greenred(75)</code>, <code>bluered(75)</code> and <code>redblue(75)</code>.</li>
+</ul>
+<p>Some good hints on modifying your heatmap for better visualisation can be found in this post: <a href="http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/" class="uri">http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/</a> .</p>
 <p><strong>Advanced</strong></p>
 <p>Note the <code>ColSideColors</code> parameter used in the above blog post, used to add a banner bar to the heatmap. We can use this to compare the (unsupervised) clustering to known labels. You might want to try this with the tumour grade from the phenotype information (<code>pData(nki)</code>), or other phenotype variables.</p>
 </div>
@@ -234,15 +250,15 @@ kmeans(M, 2)</code></pre>
 ## 
 ## Cluster means:
 ##   Sample1 Sample2 Sample3
-## 1     8.0     4.5     9.5
-## 2     3.5     8.5     3.0
+## 1     3.5     8.5     3.0
+## 2     8.0     4.5     9.5
 ## 
 ## Clustering vector:
 ## Gene1 Gene2 Gene3 Gene4 
-##     1     2     2     1 
+##     2     1     1     2 
 ## 
 ## Within cluster sum of squares by cluster:
-## [1] 7 3
+## [1] 3 7
 ##  (between_SS / total_SS =  88.7 %)
 ## 
 ## Available components:
@@ -252,19 +268,19 @@ kmeans(M, 2)</code></pre>
 ## [9] &quot;ifault&quot;</code></pre>
 <pre class="r"><code># Cluster samples into two groups (take the transpose of the matrix)
 kmeans(t(M), 2)</code></pre>
-<pre><code>## K-means clustering with 2 clusters of sizes 2, 1
+<pre><code>## K-means clustering with 2 clusters of sizes 1, 2
 ## 
 ## Cluster means:
 ##   Gene1 Gene2 Gene3 Gene4
-## 1   8.5   3.5     3     9
-## 2   5.0   8.0     9     4
+## 1   5.0   8.0     9     4
+## 2   8.5   3.5     3     9
 ## 
 ## Clustering vector:
 ## Sample1 Sample2 Sample3 
-##       1       2       1 
+##       2       1       2 
 ## 
 ## Within cluster sum of squares by cluster:
-## [1] 11  0
+## [1]  0 11
 ##  (between_SS / total_SS =  85.0 %)
 ## 
 ## Available components:
@@ -274,10 +290,16 @@ kmeans(t(M), 2)</code></pre>
 ## [9] &quot;ifault&quot;</code></pre>
 <p>The “Clustering vector” shows which cluster each item has been assigned to.</p>
 <p>Since this toy data had a very clear distinction between groups, we get the same groupings from K-means as we did for hierarchical clustering.</p>
+<p>If you try <code>kmeans()</code> on the real expression data, you will find it complains about missing values. We could filter our data, or fill in missing values with a command like <code>all_expr[ is.na(all_expr) ] = 0</code> (note that this is a pretty crude way to fill in missing data!).</p>
+<p>You can also try using more specific packages for clustering. For instance, try</p>
+<pre class="r"><code>library('cluster')
+help(`clara`)</code></pre>
+<p><code>clara()</code> actually performs k-medoids clustering, and can handle missing values, as well as large datasets.</p>
 </div>
 <div id="python" class="section level3">
 <h3>Python</h3>
-<p>If you’re interested in using these same algorithms in Python, K-means and hierarchical clustering implementations can be found in the scikit-learn module (<a href="http://scikit-learn.org/">http://scikit-learn.org/</a>), under <strong>sklearn.cluster</strong>. Straighforward versions of these algorithms are also not too hard to implement!</p>
+<p>If you’re interested in using these same algorithms in Python, K-means and hierarchical clustering implementations can be found in the scikit-learn module (<a href="http://scikit-learn.org/" class="uri">http://scikit-learn.org/</a>), under <strong>sklearn.cluster</strong>. Straighforward versions of these algorithms are also not too hard to implement!</p>
+<p>.</p>
 </div>
 
 

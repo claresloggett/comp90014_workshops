@@ -7,8 +7,6 @@ This week we'll look a bit more carefully at heatmaps, which apply hierarchical 
 
 In order to visualise the data effectively, we'll also look at some more useful built-in R functions for manipulating data frames and matrices.
 
-To get started, log into RStudio on your cloud instance (http://your-ip-address/rstudio) or if you prefer, on your own computer. See the Week 8 lab for details.
-
 ### Reminders
 
 You can use `help()` or the `?` operator to get help on any function in R. This also works on many libraries once they are loaded.
@@ -100,7 +98,7 @@ You can also try `heatmap.2()`, an enhanced version of the heatmap function, pro
 
 Next we'll load some real data, which will require a bit more work to cluster effectively.
 
-The `breastCancerNKI` package contains gene expression data from a breast cancer study. You can use `library(help=breastCancerNKI)` to see some information on the source of the data.
+The `breastCancerNKI` package contains gene expression data from a breast cancer study. You can use `library(help=breastCancerNKI)` to see some information on the source of the data. If you are interested, the original paper on this data by van't Veer et al. is [here](http://www.nature.com/nature/journal/v415/n6871/full/415530a.html).
 
 You can see a list of available datasets with the `data()` command. If you've loaded the breastCancerNKI library, you should see the dataset `nki` available. Load it with `data(nki)`, and you should see it appear as a variable in your environment. In RStudio, this is in the Environment window, and you can also see defined variables using `ls()`.
 
@@ -116,7 +114,13 @@ Here are some Biobase functions to try out on `nki`:
 
 If you like, you can use `library(help=Biobase)` to see a list of all Biobase functions.
 
-Assign the expression matrix to a variable and use `dim()` to see how many genes and samples there are.
+**Exercise:** Assign the expression matrix to a variable and use `dim()` to see how many genes and samples there are.
+```{r echo=FALSE, include=FALSE}
+library("breastCancerNKI")
+data('nki')
+library('Biobase')
+all_expr = exprs(nki)
+```
 
 ### Find the most variable genes
 
@@ -124,17 +128,41 @@ You should have found that there are more than 20,000 genes in the array. We can
 
 We'll try to include those genes whose expression values vary the most across all samples (this is not as sophisticated as doing DGE, which gives us genes which vary between categories).
 
+#### Filtering and missing data
+
+**Stop and think:** Would it make sense to filter our genes? Last week we filtered probes which had low expression values in *both* groups (men and women), since these were not likely to be useful. Here, we are doing clustering, so we don't know in advance which groups to check, or even how many groups there will be. 
+
+The other thing we might want to filter on is missing data. Some values in our expression array are unknown; these have the special R value `NA`. Given an array `all_expr`, we can find missing values with
+```{r eval=FALSE}
+is.na(all_expr)
+```
+Try this on your own expression array variable.
+
+We can count how many `TRUE` values there are (and hence how many `NA`s there were) with `sum()`, which will treat `TRUE` as `1` and `FALSE` as `0`:
+```{r}
+sum(is.na(all_expr))
+```
+
+This isn't too many compared to the size of the data. The `heatmap()` function can cope with missing data, so in the interests of time we will *not* do any filtering.  But, bear in mind that filtering out probes with large numbers of missing values might be a good idea, as their apparent variance could be misleading.
+
+
 #### Calculate variances
 
 We can find the variance of set of numbers with the `var()` function. Try for yourself to use indexing to get the top row of the expression matrix, i.e. the expression values for a single gene, and apply `var()` to this row. Note that you will probably have to use the `na.rm=TRUE` parameter of `var()` to ignore missing values.
 
-To apply `var()` to *all* rows, we'll use the `apply()` function, which we also used in Week 9. `apply()` works a bit like a `for` loop: it takes a matrix (or data frame) and applies the function we give it to every row, or every column. We can use `apply` with `var` to get a vector of gene variances, one per row of the expression matrix. Using the documentation for `apply()` and `var()`, see if you can do this.
+To apply `var()` to *all* rows, we'll use the `apply()` function, which we also used in Week 9. `apply()` works a bit like a `for` loop: it takes a matrix (or data frame) and applies the function we give it to every row, or every column. If you have saved your expression matrix to a variable called, for example, `all_expr`, then you can use `apply` with `var` to get a vector of gene variances, one per row of the expression matrix, like so:
+```{r}
+variances = apply(all_expr, 1, var, na.rm=TRUE)
+```
+The extra argument here, `na.rm=TRUE`, just gets passed in to `var()`, so that `var()` will ignore missing values.
+
+
 
 #### Sort matrix to get top genes
 
-We'll try to take the 500 most variable genes. 
+We'll try to take the 50 most variable genes. 
 
-One way to do this is to sort the genes by variance, and then just take the first 500 rows. 
+One way to do this is to sort the genes by variance, and then just take the first 50 rows. 
 
 Sorting in R is usually done with the `order()` function. This function returns a vector telling you where each item should go in order to be sorted. This looks a bit indirect the first time you see it. Here's an example to illustrate. We'll make a data frame, then try to sort it alphabetically.
 ```{r}
@@ -163,17 +191,20 @@ If we now wanted the top four of our numbers ordered alphabetically, we could ju
 sorted_oddtable[1:4,]
 ```
 
-Using the variances you calculated with `apply()` and `var()`, now use `order()` on the resulting variances to sort the expression matrix and get the 500 most variable genes. Notice that `order()` sorts in ascending order by default, so you'll probably want to tell it to sort in descending order instead.
+**Exercise:** Using the variances you calculated with `apply()` and `var()`, now use `order()` on the resulting variances to sort the expression matrix and get the 50 most variable genes. Notice that `order()` sorts in ascending order by default, so you'll probably want to tell it to sort in descending order instead.
 
 ### Draw the heatmap
 
-Once we've filtered the data, drawing the heatmap is pretty simple. Use the `heatmap()` or `heatmap.2()` function, as you prefer. 
+Once we've filtered the data, drawing the heatmap is pretty simple. Use the `heatmap()` or `heatmap.2()` function, as you prefer. Make sure to use your top 50 genes only, try not to accidentally run `heatmap()` on your entire expression matrix - this may freeze R!
 
 If you use `heatmap.2()`, use the parameter `trace="none"` to prevent overly-dense trace lines being drawn over the top of your heatmap.
 
-Some good hints on modifying your heatmap for better visualisation can be found in this post: http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/ . You might want to try the redgreen colour map, e.g. `col=redgreen(75)`.
+You will probably find that the default red-yellow colour scheme is not very clear. Remember you can change the colours used with the `col` parameter in the `heatmap()` function (e.g. `heatmap(M, col=bluered(75)`). There are a couple of functions to create different colour schemes in R (some of which are equivalent). Last week we used the `colorRampPalette()` function. Other convenient options include:
 
-You may want to use gene names instead of gene identifiers in your heatmap.
+* `colorpanel()`: e.g. `colorpanel(75, "blue", "lightyellow", "red")` will give a palette of 75 colours from blue through light yellow to red, with light yellow representing zero.
+* convenience aliases which just take a number - e.g. try `redgreen(75)`, `greenred(75)`, `bluered(75)` and `redblue(75)`.
+
+Some good hints on modifying your heatmap for better visualisation can be found in this post: http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/ . 
 
 **Advanced** 
 
@@ -206,6 +237,18 @@ The "Clustering vector" shows which cluster each item has been assigned to.
 
 Since this toy data had a very clear distinction between groups, we get the same groupings from K-means as we did for hierarchical clustering.
 
+If you try `kmeans()` on the real expression data, you will find it complains about missing values. We could filter our data, or fill in missing values with a command like `all_expr[ is.na(all_expr) ] = 0` (note that this is a pretty crude way to fill in missing data!).
+
+You can also try using more specific packages for clustering. For instance, try
+```{r eval=FALSE}
+library('cluster')
+help(`clara`)
+```
+
+`clara()` actually performs k-medoids clustering, and can handle missing values, as well as large datasets.
+
 ### Python
 
 If you're interested in using these same algorithms in Python, K-means and hierarchical clustering implementations can be found in the scikit-learn module (http://scikit-learn.org/), under **sklearn.cluster**.  Straighforward versions of these algorithms are also not too hard to implement!
+
+.
