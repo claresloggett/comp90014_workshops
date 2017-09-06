@@ -3,6 +3,13 @@ title: "Week 8 - Introduction to R"
 output: html_document
 ---
 
+###Objectives
+By the end of this lab, you should be able to:
+
+* Understand the basic syntax of the R programming language
+* Run a simple statistical analysis using R (linear regression)
+
+###Introduction
 This week is the first lab we'll do using the R programming language. So, we'll spend a fair amount of time introducing R. If you already know R, you may be able to go quickly through most of this document. At the end of the lab, we'll use R to fit a simple linear model to some data.
 
 R is a programming language. It is widely used in statistics, so it has basic statistics functions built-in, and many advanced statistics libraries are written in it. 
@@ -13,9 +20,10 @@ If you're new to R, the best way to remember how to use it is to not just read -
 
 We'll use RStudio, which is an interactive development environment for the R programming language. You can use RStudio on the teaching server that you logged in to in Week 1, by navigating to (using the server on which you have an account) one of:
 
-* Server 1: http://115.146.85.246/rstudio 
-* Server 2: http://144.6.225.106/rstudio 
-* Server 3: http://130.56.249.93/rstudio 
+* Username a-c: http://comp90014-a.genome.edu.au/rstudio 
+* Username d-k: http://comp90014-b.genome.edu.au/rstudio 
+* Username l-t: http://comp90014-c.genome.edu.au/rstudio 
+* Username u-z: http://comp90014-d.genome.edu.au/rstudio 
 
 Your username and password will be the same as for linux (and Jupyter). You can change your password from the linux command line, using the instructions in the Week 1 lab. 
 
@@ -94,7 +102,16 @@ Try it out: run str() on some of the other variables we created above.
 
 R has libraries which provide lots of extra functions. These will be very important for us, since we'd like to use libraries designed for transcriptomics. Many libraries for bioinformatics in R can be found in the Bioconductor project (<http://www.bioconductor.org/>).
 
-Libraries can be loaded with the `library()` function. Let's try loading limma, which has functions for differential gene expression analysis for both microarray and RNA-seq data. This will work if you're on a GVL Research Cloud instance, which should already have limma installed. Otherwise, you might have to skip ahead and see how to install libraries.
+We are going to install the limma library, which has functions for differential gene expression analysis for both microarray and RNA-seq data. The usual way to install a library into R is with the `install.packages()` function. For Bioconductor packages there is a special method:
+
+```{r eval=FALSE}
+source("http://bioconductor.org/biocLite.R")
+biocLite("limma")
+```
+
+If you are asked if you wish to use a personal library, answer yes. This installs limma in your private version of RStudio.
+
+Libraries can be loaded with the `library()` function.
 
 ```{r eval=FALSE}
 library("limma")
@@ -106,15 +123,6 @@ This loads limma. All the functions in the limma library will now work. We can a
 ?limma
 ```
 which will tell us how to find more detailed documentation.
-
-The usual way to install a library into R is with the `install.packages()` function. For Bioconductor packages there is a special method:
-
-```{r eval=FALSE}
-source("http://bioconductor.org/biocLite.R")
-biocLite("limma")
-```
-
-This installs limma. 
 
 Try to also install the Bioconductor package edgeR now.
 
