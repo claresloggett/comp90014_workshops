@@ -1,5 +1,5 @@
 ---
-title: "Week 9 - Gene clustering in R"
+title: "Week 10 - Gene clustering in R"
 output: html_document
 ---
 
@@ -130,7 +130,7 @@ all_expr = exprs(nki)
 
 ### Find the most variable genes
 
-You should have found that there are more than 20,000 genes in the array. We can't easily visualise all the genes in a heatmap - it will be hard to see and slow to compute.  You may find R freezes if you even try! In the Week 9 lab, we used the top differentially expressed genes, but in this case we haven't carried out a DGE analysis. For the purposes of this lab, we'll assume we don't know which categories our samples should be in, and see if we can visualise patterns of gene expression with unsupervised learning only. 
+You should have found that there are more than 20,000 genes in the array. We can't easily visualise all the genes in a heatmap - it will be hard to see and slow to compute.  You may find R freezes if you even try! In the Week 10 lab, we used the top differentially expressed genes, but in this case we haven't carried out a DGE analysis. For the purposes of this lab, we'll assume we don't know which categories our samples should be in, and see if we can visualise patterns of gene expression with unsupervised learning only. 
 
 We'll try to include those genes whose expression values vary the most across all samples (this is not as sophisticated as doing DGE, which gives us genes which vary between categories).
 
@@ -156,7 +156,7 @@ This isn't too many compared to the size of the data. The `heatmap()` function c
 
 We can find the variance of set of numbers with the `var()` function. Try for yourself to use indexing to get the top row of the expression matrix, i.e. the expression values for a single gene, and apply `var()` to this row. Note that you will probably have to use the `na.rm=TRUE` parameter of `var()` to ignore missing values.
 
-To apply `var()` to *all* rows, we'll use the `apply()` function, which we also used in Week 9. `apply()` works a bit like a `for` loop: it takes a matrix (or data frame) and applies the function we give it to every row, or every column. If you have saved your expression matrix to a variable called, for example, `all_expr`, then you can use `apply` with `var` to get a vector of gene variances, one per row of the expression matrix, like so:
+To apply `var()` to *all* rows, we'll use the `apply()` function, which we also used in Week 10. `apply()` works a bit like a `for` loop: it takes a matrix (or data frame) and applies the function we give it to every row, or every column. If you have saved your expression matrix to a variable called, for example, `all_expr`, then you can use `apply` with `var` to get a vector of gene variances, one per row of the expression matrix, like so:
 ```{r}
 variances = apply(all_expr, 1, var, na.rm=TRUE)
 ```
