@@ -1,7 +1,13 @@
 ---
-title: "Week 10 - Gene clustering in R"
+title: "Week 9 - Gene clustering in R"
 output: html_document
 ---
+
+###Objectives
+By the end of this lab, you should be able to:
+
+* Understand the concepts of clustering and dimensionality reduction
+* Use existing R libraries to generate heatmaps and visualize gene expression data. 
 
 This week we'll look a bit more carefully at heatmaps, which apply hierarchical clustering to visualise gene expression data. 
 
