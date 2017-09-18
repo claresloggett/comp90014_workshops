@@ -7,8 +7,7 @@ This week we'll use the [Bioconductor](http://www.bioconductor.org/) package [ed
 
 edgeR is designed to detect differential gene expression in counts from RNA-seq data. We'll be looking for genes which are differentially expressed between women and men.
 
-To get started, log into RStudio on the COMP90014 servers, or if you prefer, on your own computer. See the [Week 8 lab](r_intro_workshop.html) for details.
-
+To get started, log into RStudio on the COMP90014 servers, or if you prefer, on your own computer. 
 
 ### R scripts
 
@@ -303,7 +302,7 @@ We've given `apply()`:
 * the name of the function to apply to each row
 
 Visualising the resulting P-values:
-```{r}
+```{r eval=FALSE}
 hist(p_values, breaks=150)
 ```
 
