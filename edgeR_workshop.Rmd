@@ -313,5 +313,5 @@ You will find however, that since the absence of a Y-chromosome is quite an extr
 
 ### Extra: Degust
 
-Degust is a useful tool mentioned in the lab. It uses the R library limma (by the same group as edgeR) to generate interactive differential expression plots. If you want to play with it, it is at http://www.vicbioinformatics.com/software.degust.shtml and we've temporarily loaded in today's data [here](http://www.vicbioinformatics.com/degust/compare.html?code=fadd6cc8160b74410a013a7347a2870e).
+Degust is a useful tool mentioned in the lab. It uses the R library limma (by the same group as edgeR) to generate interactive differential expression plots. If you want to play with it, it is at http://degust.erc.monash.edu/.
 
