@@ -3,11 +3,9 @@ COMP90014_workshops
 
 Programming tutorials used in COMP90014 labs. 
 
-Launch Binder:
+To launch Binder:
 
-* Jupyter Notebook on master: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/claresloggett/comp90014_workshops/master)
-* Jupyter Notebook on gh-pages: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/claresloggett/comp90014_workshops/gh-pages)
-* JupyterLab on master: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/claresloggett/comp90014_workshops/master?urlpath=lab)
-* JupyterLab on gh-pages: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/claresloggett/comp90014_workshops/gh-pages?urlpath=lab)
+* JupyterLab: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/claresloggett/comp90014_workshops/master?urlpath=lab)
+* Jupyter Notebook: [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/claresloggett/comp90014_workshops/master)
 
-Most of the contents of this repository are currently in the gh-pages branch.
+Binder will let you play with notebooks in a temporary environment. You should download any resulting work that you want to keep.
