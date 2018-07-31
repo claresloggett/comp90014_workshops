@@ -1,59 +1,101 @@
+import numpy as np
 
-def traceback(a,b,scoregrid,x=None,y=None,
-              indel_score=-1, match_score=2, mismatch_score=-1):
+def traceback(a,b,scoregrid,indel_score=-1, match_score=2, mismatch_score=-1):
     """
-    Trace back recursively from given coordinates.
-    Returns a list of top-scoring traces. If only one trace is possible
-    for the top score, returns a list containing just one trace.
-    If x and y are none, they will be set to the bottom-right corner of
-    the grid.
+    Traceback for global alignment.
+    Returns a top-scoring trace. If multiple traces are possible for the
+    top alignment score, this function will return just one of them, arbitrarily.
     """
     X,Y = scoregrid.shape
     assert X==len(a)+1
     assert Y==len(b)+1
-    if x==0 and y==0:
-        # We have reached the end of the traceback
-        # return a list containing one trace, where that starting trace
-        # is just a tuple of two empty strings
-        return [[('','')]]
-    # Start at bottom right if coordinates not specified yet
-    if x is None:
-        x = X-1
-    if y is None:
-        y = Y-1
-    # Make a list of possible paths to follow from x,y
-    # Include any of the three cells where we could have got the current score
-    # Perform a trace from each of those cells
-    # Each traceback will return a list of paths; concatenate these lists
-    # Note that we have to compare a[x-1] to b[y-1] again, but only along the path,
-    # not for every cell of the grid, i.e. O(N) not O(N^2)
-    current_score = scoregrid[x,y]
-    if a[x-1]==b[y-1]:
-        match_mismatch_score = match_score
-    else:
-        match_mismatch_score = mismatch_score
-    traces = []
-    if x>0 and scoregrid[x-1,y]+indel_score == current_score:
-        # Do a deletion at this step: 
-        #  add a letter to the first alignment string but a '-' to the second string,
-        #  and go from x-1
-        deletion_traces = traceback(a,b,scoregrid,x-1,y,indel_score,match_score,mismatch_score)
-        traces += [trace + [(a[x-1],'-')] for trace in deletion_traces]
-    if y>0 and scoregrid[x,y-1]+indel_score == current_score:
-        # Do an insertion at this step: 
-        #  add a letter to the second alignment string but a '-' to the first string,
-        #  and go from y-1
-        insertion_traces = traceback(a,b,scoregrid,x,y-1,indel_score,match_score,mismatch_score)
-        traces += [trace + [('-',b[y-1])] for trace in insertion_traces]
-    if x>0 and y>0 and scoregrid[x-1,y-1]+match_mismatch_score == current_score:
-        # Do a match or mismatch at this step: 
-        #  add a letter to both alignment strings, and go from
-        #  and go from x-1, y-1
-        match_mismatch_traces = traceback(a,b,scoregrid,x-1,y-1,indel_score,match_score,mismatch_score)
-        traces += [trace + [(a[x-1],b[y-1])] for trace in match_mismatch_traces]
+    x, y = X-1, Y-1
+    # Start with an empty trace
+    trace = []
+    # Trace back until we reach the top-left corner
+    while x>0 or y>0:
+        current_score = scoregrid[x,y]
+        # Note that we have to compare a[x-1] to b[y-1] again, and compare scores,
+        # but only along the path, not for every cell of the grid, i.e. O(N) not O(N^2)
+        if a[x-1]==b[y-1]:
+            match_mismatch_score = match_score
+        else:
+            match_mismatch_score = mismatch_score
+        # Here we pick just one operation, so we'll only trace one path
+        if x>0 and y>0 and scoregrid[x-1,y-1]+match_mismatch_score == current_score:
+            # Do a match or mismatch at this step: 
+            #  add a letter to both alignment strings, 
+            #  and go from x-1, y-1
+            trace.append((a[x-1],b[y-1]))
+            x -= 1
+            y -= 1
+        elif x>0 and scoregrid[x-1,y]+indel_score == current_score:
+            # Do a deletion at this step: 
+            #  add a letter to the first alignment string but a '-' to the second string,
+            #  and go from x-1
+            trace.append((a[x-1],'-'))
+            x -= 1
+        elif y>0 and scoregrid[x,y-1]+indel_score == current_score:
+            # Do an insertion at this step: 
+            #  add a letter to the second alignment string but a '-' to the first string,
+            #  and go from y-1
+            trace.append(('-',b[y-1]))
+            y -= 1
+        else:
+            raise ValueError("No valid trace found")
+    
+    return trace[::-1]
 
-    return traces
-
+def traceback_local(a,b,scoregrid,indel_score=-1, match_score=2, mismatch_score=-1):
+    """
+    Traceback for local alignment.
+    Here we start from a highest-scoring cell in the grid, and stop when we reach a zero.
+    Returns a top-scoring trace. If multiple traces are possible for the
+    top alignment score, this function will return just one of them, arbitrarily.
+    """
+    X,Y = scoregrid.shape
+    assert X==len(a)+1
+    assert Y==len(b)+1
+    # Find the highest-scoring square to start
+    # If there is more than one, we pick one arbitrarily
+    # (better would be to return all traces)
+    x,y = np.unravel_index(np.argmax(scoregrid, axis=None), scoregrid.shape)
+    # Start with an empty trace
+    trace = []
+    # Trace back until we reach the top-left corner
+    while x>0 or y>0:
+        current_score = scoregrid[x,y]
+        if current_score==0:
+            # We've finished our local alignment
+            break
+        # Note that we have to compare a[x-1] to b[y-1] again, and compare scores,
+        # but only along the path, not for every cell of the grid, i.e. O(N) not O(N^2)
+        if a[x-1]==b[y-1]:
+            match_mismatch_score = match_score
+        else:
+            match_mismatch_score = mismatch_score
+        # Here we pick just one operation, so we'll only trace one path
+        if x>0 and y>0 and scoregrid[x-1,y-1]+match_mismatch_score == current_score:
+            # Do a match or mismatch at this step: 
+            #  add a letter to both alignment strings, 
+            #  and go from x-1, y-1
+            trace.append((a[x-1],b[y-1]))
+            x -= 1
+            y -= 1
+        elif x>0 and scoregrid[x-1,y]+indel_score == current_score:
+            # Do a deletion at this step: 
+            #  add a letter to the first alignment string but a '-' to the second string,
+            #  and go from x-1
+            trace.append((a[x-1],'-'))
+            x -= 1
+        elif y>0 and scoregrid[x,y-1]+indel_score == current_score:
+            # Do an insertion at this step: 
+            #  add a letter to the second alignment string but a '-' to the first string,
+            #  and go from y-1
+            trace.append(('-',b[y-1]))
+            y -= 1
+    
+    return trace[::-1]
 
 def get_alignment(trace):
     """
