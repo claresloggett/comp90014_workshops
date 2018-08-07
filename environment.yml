@@ -6,3 +6,6 @@ dependencies:
   - numpy
   - matplotlib
   - pandas
+  - scipy 
+  - biopython 
+  - scikit-bio
