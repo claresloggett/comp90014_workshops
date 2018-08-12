@@ -53,10 +53,6 @@ def time_sort(sort_function, input_list):
     Assumes we are being called from an IPython/Jupyter context and adds the
     IPython namespace to the local namespace.
     """
-    builtins.__dict__.update(get_ipython().__dict__['user_ns'])
-    global unsorted_list
-    unsorted_list = input_list
     num_runs = 1000
-    command = "{}(unsorted_list)".format(sort_function.__name__)
-    return timeit(command, globals=globals(), number=num_runs)/num_runs
+    return timeit("sort_function(input_list)", number=num_runs)/num_runs
 
