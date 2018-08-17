@@ -24,6 +24,14 @@ def points_equal(centroids1, centroids2):
     epsilon = 0.001
     return np.all(np.array(centroids1) - np.array(centroids2) < epsilon)
 
+# In this version, return the point as a numpy array
+def average_point_array(points):
+    """
+    Take in a list of points, where each point is a tuple.
+    Return the average of the points.
+    """
+    return np.mean(np.array(points), axis=0)
+
 # A plotting function so we can visualise results
 # This function plots data assuming points are a list of tuples
 def plot_kmeans(data, centroids, assignments, k):
