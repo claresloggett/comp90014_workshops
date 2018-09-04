@@ -9,3 +9,4 @@ dependencies:
   - scipy 
   - biopython 
   - scikit-bio
+  - networkx
