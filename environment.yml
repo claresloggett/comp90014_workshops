@@ -10,3 +10,4 @@ dependencies:
   - biopython 
   - scikit-bio
   - networkx
+  - graphviz
