@@ -11,3 +11,4 @@ dependencies:
   - scikit-bio
   - networkx
   - graphviz
+  - python-graphviz
