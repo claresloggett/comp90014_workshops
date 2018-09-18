@@ -14,3 +14,5 @@ dependencies:
   - python-graphviz
   - altair
   - vega
+  - scikit-learn
+  - umap-learn
